@@ -1,0 +1,67 @@
+{
+  "songName": {
+    "Don't Click Play": "Don't Click Play",
+    "How Can I Dance": "How Can I Dance",
+    "Lovin Myself": "Lovin Myself",
+    "Sucks To Be My Ex": "Sucks To Be My Ex",
+    "Wet, Hot American Dream": "Wet, Hot American Dream",
+    "Take My Call": "Take My Call",
+    "Know Somebody": "Know Somebody",
+    "Lost Your Faith": "Lost Your Faith",
+    "Fight For Me": "Fight For Me",
+    "Skin In The Game": "Skin In The Game",
+    "World's Smallest Violin": "World's Smallest Violin",
+    "Catch My Breath": "Catch My Breath"
+  },
+  "isStack": {
+    "Take My Call": "<70M",
+    "Skin In The Game": "<50M",
+    "Sucks To Be My Ex": "<50M",
+    "Catch My Breath": "<30M",
+    "Know Somebody": "<30M",
+    "How Can I Dance": "<30M",
+    "World's Smallest Violin": "<30M",
+    "Wet, Hot American Dream": "<30M",
+    "Fight For Me": "<30M",
+    "Lost Your Faith": "<30M"
+  },
+  "data": {
+    "Don't Click Play": [
+      130176759, 130204689, 130236855, 130269446, 130302115, 130333829,
+      130368721
+    ],
+    "How Can I Dance": [
+      15052232, 15060432, 15070362, 15082489, 15095875, 15110079, 15124365
+    ],
+    "Lovin Myself": [
+      219123650, 219168933, 219224658, 219280240, 219334195, 219391103,
+      219448226
+    ],
+    "Sucks To Be My Ex": [
+      37922569, 37928862, 37936267, 37944446, 37953591, 37961701, 37970097
+    ],
+    "Wet, Hot American Dream": [7199792, 7202118, 7204667, 7207531, 7211237, 7214466, 7218113],
+    "Take My Call": [
+      64220515, 64228600, 64237852, 64248297, 64259647, 64270344, 64281444
+    ],
+    "Know Somebody": [
+      16699439, 16706288, 16714195, 16723665, 16735002, 16745408, 16758033
+    ],
+    "Lost Your Faith": [
+      5546714, 5548578, 5550733, 5553372, 5556952, 5559785, 5562416
+    ],
+    "Fight For Me": [
+      6479953, 6482764, 6486257, 6490165, 6494952, 6499693, 6503917
+    ],
+    "Skin In The Game": [
+      45282549, 45292050, 45303341, 45316380, 45328585, 45340816, 45358219
+    ],
+    "World's Smallest Violin": [
+      9288749, 9292399, 9296611, 9301808, 9307812, 9312889, 9319301
+    ],
+    "Catch My Breath": [
+      22106443, 22111446, 22117244, 22123907, 22132530, 22140635, 22149062
+    ],
+    "xAxisData": ["02-22", "02-23", "02-24", "02-25", "02-26", "02-27", "02-28"]
+  }
+}

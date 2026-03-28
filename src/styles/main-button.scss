@@ -1,0 +1,33 @@
+.main-btn {
+  height: 52px;
+  padding: 0 35px;
+  font-size: 17px;
+  border: 2px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.-white {
+    background: #fff;
+    color: #000;
+  }
+
+  &.-foggy {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(64, 158, 255, 0.3);
+  }
+
+  /* 统一的点击反馈 */
+  &:active {
+    transform: scale(0.95) !important;
+    background: #409eff !important;
+    border-color: #409eff !important;
+    color: #fff !important;
+    transition: all 0.1s;
+  }
+}

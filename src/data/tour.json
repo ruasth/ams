@@ -1,0 +1,303 @@
+{
+  "europe": [
+    {
+      "id": "TE001",
+      "date": "2023-4-14",
+      "city": "曼彻斯特",
+      "country": "英国",
+      "venue": "O2 Ritz",
+      "lng": -2.24297,
+      "lat": 53.474494
+    },
+    {
+      "id": "TE002",
+      "date": "2023-4-15",
+      "city": "格拉斯哥",
+      "country": "英国",
+      "venue": "SWG3 TV Studios",
+      "lng": -4.299776,
+      "lat": 55.864592
+    },
+    {
+      "id": "TE003",
+      "date": "2023-04-17",
+      "city": "伯明翰",
+      "country": "英国",
+      "venue": "O2 Institute",
+      "lng": -1.887375,
+      "lat": 52.475592
+    },
+    {
+      "id": "TE004",
+      "date": "2023-04-19",
+      "city": "伦敦",
+      "country": "英国",
+      "venue": "O2 Shepherds Bush Empire",
+      "lng": -0.22433,
+      "lat": 51.50349
+    },
+    {
+      "id": "TE005",
+      "date": "2023-04-20",
+      "city": "伦敦",
+      "country": "英国",
+      "venue": "O2 Shepherds Bush Empire",
+      "lng": -0.22433,
+      "lat": 51.50349
+    },
+    {
+      "id": "TE006",
+      "date": "2023-04-24",
+      "city": "布鲁塞尔",
+      "country": "比利时",
+      "venue": "Ancienne Belgique",
+      "lng": 4.34861,
+      "lat": 50.84694
+    },
+    {
+      "id": "TE007",
+      "date": "2023-04-25",
+      "city": "巴黎",
+      "country": "法国",
+      "venue": "L'Olympia",
+      "lng": 2.328239,
+      "lat": 48.870171
+    },
+    {
+      "id": "TE008",
+      "date": "2023-04-28",
+      "city": "阿姆斯特丹",
+      "country": "荷兰",
+      "venue": "Paradiso",
+      "lng": 4.88382,
+      "lat": 52.36219
+    },
+    {
+      "id": "TE009",
+      "date": "2023-05-08",
+      "city": "斯德哥尔摩",
+      "country": "瑞典",
+      "venue": "Berns Salonger",
+      "lng": 18.0739,
+      "lat": 59.33218
+    },
+    {
+      "id": "TE010",
+      "date": "2023-05-10",
+      "city": "奥斯陆",
+      "country": "挪威",
+      "venue": "Sentrum Scene",
+      "lng": 10.7517,
+      "lat": 59.91543
+    },
+    {
+      "id": "TE011",
+      "date": "2023-05-13",
+      "city": "苏黎世",
+      "country": "瑞士",
+      "venue": "Komplex 457",
+      "lng": 8.5,
+      "lat": 47.38727
+    },
+    {
+      "id": "TE012",
+      "date": "2023-05-15",
+      "city": "米兰",
+      "country": "意大利",
+      "venue": "Fabrique",
+      "lng": 9.22174,
+      "lat": 45.49023
+    },
+    {
+      "id": "TE013",
+      "date": "2023-05-18",
+      "city": "里斯本",
+      "country": "葡萄牙",
+      "venue": "Lisbon Coliseum",
+      "lng": -9.14187,
+      "lat": 38.72423
+    },
+    {
+      "id": "TE014",
+      "date": "2023-05-21",
+      "city": "汉堡",
+      "country": "德国",
+      "venue": "Docks",
+      "lng": 9.97918,
+      "lat": 53.54205
+    },
+    {
+      "id": "TE015",
+      "date": "2023-05-22",
+      "city": "科隆",
+      "country": "德国",
+      "venue": "E-Werk",
+      "lng": 6.94378,
+      "lat": 50.94512
+    }
+  ],
+  "american": [
+    {
+      "id": "TA001",
+      "date": "2023-5-31",
+      "city": "底特律",
+      "state": "密歇根州",
+      "venue": "St. Andrew's Hall",
+      "lng": -83.04155,
+      "lat": 42.33234
+    },
+    {
+      "id": "TA002",
+      "date": "2023-6-1",
+      "city": "格拉斯哥",
+      "state": "伊利诺伊州",
+      "venue": "House of Blues - Chicago",
+      "lng": -87.629493,
+      "lat": 41.888251
+    },
+    {
+      "id": "TA003",
+      "date": "2023-06-03",
+      "city": "匹兹堡",
+      "state": "宾夕法尼亚州",
+      "venue": "Stage AE",
+      "lng": -80.00123,
+      "lat": 40.44722
+    },
+    {
+      "id": "TA004",
+      "date": "2023-06-04",
+      "city": "费城",
+      "state": "宾夕法尼亚州",
+      "venue": "Theatre of Living Arts",
+      "lng": -75.16733,
+      "lat": 39.94056
+    },
+    {
+      "id": "TA005",
+      "date": "2023-06-06",
+      "city": "波士顿",
+      "state": "马萨诸塞州",
+      "venue": "Paradise Rock Club",
+      "lng": -71.1015,
+      "lat": 42.3491
+    },
+    {
+      "id": "TA006",
+      "date": "2023-06-08",
+      "city": "纽约",
+      "state": "纽约",
+      "venue": "Irving Plaza",
+      "lng": -73.9917,
+      "lat": 40.7323
+    },
+    {
+      "id": "TA007",
+      "date": "2023-06-09",
+      "city": "银泉",
+      "state": "马里兰州",
+      "venue": "The Fillmore Silver Spring",
+      "lng": -77.0261,
+      "lat": 39.0002
+    },
+    {
+      "id": "TA008",
+      "date": "2023-06-11",
+      "city": "亚特兰大",
+      "state": "乔治亚州",
+      "venue": "Buckhead Theatre",
+      "lng": -84.3875,
+      "lat": 33.8496
+    },
+    {
+      "id": "TA009",
+      "date": "2023-06-12",
+      "city": "纳什维尔",
+      "state": "田纳西州",
+      "venue": "Brooklyn Bowl Nashville",
+      "lng": -86.7769,
+      "lat": 36.1546
+    },
+    {
+      "id": "TA010",
+      "date": "2023-06-15",
+      "city": "休斯顿",
+      "state": "德克萨斯州",
+      "venue": "House of Blues - Houston",
+      "lng": -95.3691,
+      "lat": 29.7513
+    },
+    {
+      "id": "TA011",
+      "date": "2023-06-16",
+      "city": "达拉斯",
+      "state": "德克萨斯州",
+      "venue": "The Echo Lounge",
+      "lng": -96.8085,
+      "lat": 32.7785
+    },
+    {
+      "id": "TA012",
+      "date": "2023-06-19",
+      "city": "圣地亚哥",
+      "state": "加利福尼亚州",
+      "venue": "House of Blues - San Diego",
+      "lng": -117.1598,
+      "lat": 32.7174
+    },
+    {
+      "id": "TA013",
+      "date": "2023-06-20",
+      "city": "洛杉矶",
+      "state": "加利福尼亚州",
+      "venue": "Fonda Theatre",
+      "lng": -118.3257,
+      "lat": 34.1018
+    },
+    {
+      "id": "TA014",
+      "date": "2023-06-22",
+      "city": "旧金山",
+      "state": "加利福尼亚州",
+      "venue": "The Fillmore",
+      "lng": -122.4327,
+      "lat": 37.7848
+    },
+    {
+      "id": "TA015",
+      "date": "2023-06-24",
+      "city": "西雅图",
+      "state": "华盛顿",
+      "venue": "Neptune Theatre",
+      "lng": -122.3481,
+      "lat": 47.66
+    },
+    {
+      "id": "TA016",
+      "date": "2023-06-25",
+      "city": "波特兰",
+      "state": "俄勒冈州",
+      "venue": "Crystal Ballroom",
+      "lng": -122.684864,
+      "lat": 45.522755
+    },
+    {
+      "id": "TA017",
+      "date": "2023-06-28",
+      "city": "丹佛",
+      "state": "科罗拉多州",
+      "venue": "Summit Music Hall",
+      "lng": -104.9847,
+      "lat": 39.7522
+    },
+    {
+      "id": "TA018",
+      "date": "2023-06-30",
+      "city": "明尼阿波利斯",
+      "state": "明尼苏达州",
+      "venue": "Varsity Theater",
+      "lng": -93.2655,
+      "lat": 44.9632
+    }
+  ]
+}

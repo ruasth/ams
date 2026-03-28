@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  /* width: 100%;
+  height: 100%; */
+  overflow-x: hidden; /* 防止横向滚动 */
+  overflow-y: auto !important;
+  width: 100%;
+  height: auto !important;
+  min-height: 100vh !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* 隐藏 Chrome, Safari 和 Opera 的滚动条 */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* 隐藏 IE, Edge 和 Firefox 的滚动条 */
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/// * // * /// * // * /// * // * /// * // * /// * // * ///
+
+:root {
+  --bg-dark: #050505;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-main: #e0e0e0;
+  --accent-cyan: #409eff;
+
+  --shadow-blue: 0 0 10px rgba(0, 243, 255, 0.3);
+
+  --border-Solo: #33d9b2;
+  --border-Collab: #706fd3;
+  --border-HNH: #ff5252;
+  --border-DND: #34ace0;
+  --border-DCP: #ffb142;
+}
+
+// 经常用的active样式 封装成mixin
+@mixin active-bgcl {
+  background: #409eff !important;
+  border-color: #409eff !important;
+}
+
+// 弹跳hover与active
+.jumpy-transition {
+  // background-color: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.2);
+  }
+  &:active {
+    transform: scale(0.95) !important;
+    transition: all 0.1s;
+  }
+
+  // 此网页主题风格选项
+  &_wt-bgcl {
+    // 直接继承父类名 .jumpy-transition_wt-bgcl表示带点击颜色变化的
+    @extend .jumpy-transition;
+    &:active {
+      @include active-bgcl;
+      // background: #409eff !important;
+      // border-color: #409eff !important;
+    }
+  }
+}
+
+// 更模糊背景 + 玻璃边缘 所以看起来很玻璃
+.glassy-background {
+  // background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(#fff1, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+}
+
+// 通用按钮 提供两种 白/雾 形态
+// 默认矩形 .glassy-background + .jumpy-transition
+.normal-btn {
+  height: 52px;
+  padding: 0 35px;
+  font-size: 17px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  @extend .jumpy-transition;
+
+  &:hover {
+    transform: translateY(-5px); // 单独修改
+    box-shadow: 0 12px 25px rgba(64, 158, 255, 0.3);
+  }
+
+  &:active {
+    @include active-bgcl;
+    color: #fff;
+    transform: translateY(-5px); // 单独修改
+  }
+
+  &_white {
+    @extend .normal-btn;
+    background: #fff;
+    color: #000;
+  }
+
+  &_foggy {
+    @extend .normal-btn, .glassy-background;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/// * // * /// * // * /// * // * /// * // * /// * // * ///
+/// 选项提示
+/// active-bgcl -> hover 与 active 背景变化
+/// jumpy-transition -> 弹跳动画 / + _wt-bgcl -> 点击颜色
+/// glassy-background -> 玻璃背景
+/// normal-btn -> 通用按钮 / + _white -> 白色按钮 / + _foggy -> 雾按钮
+/// narmal-btn 本身包含了 jumpy-transition + glassy-background 只是transition不同
+
+/* #app {
+  width: 100%;
+  min-height: 100vh;
+} */

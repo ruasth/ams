@@ -1,0 +1,92 @@
+[
+  {
+    "year": "2018",
+    "sort": 1,
+    "events": [
+      {
+        "id": 1,
+        "date": "01-15",
+        "title": "Sweet but Psycho",
+        "description": "一举成名之作，发行后迅速登顶多国榜单，成为职业生涯的首个爆款单曲。",
+        "cover": "@/assets/Cover/sweetbutpsycho.jpg",
+        "bgUrl": "@/assets/Cover/sweetbutpsycho.jpg",
+        "tags": [
+          "爆款单曲",
+          "出道"
+        ]
+      },
+      {
+        "id": 2,
+        "date": "06-28",
+        "title": "Event 2",
+        "description": "同年的第二个里程碑，开启了欧美巡演的首站，累计巡演场次突破50场。",
+        "cover": "@/assets/Cover/event2.jpg",
+        "bgUrl": "@/assets/Cover/event2.jpg",
+        "tags": [
+          "巡演",
+          "里程碑"
+        ]
+      },
+      {
+        "id": 3,
+        "date": "09-10",
+        "title": "Event 3",
+        "description": "同年的第三个里程碑，获得MTV音乐奖最佳新人提名，行业认可度进一步提升。",
+        "cover": "@/assets/Cover/event3.jpg",
+        "bgUrl": "@/assets/Cover/event3.jpg",
+        "tags": [
+          "奖项",
+          "提名"
+        ]
+      }
+    ]
+  },
+  {
+    "year": "2019",
+    "sort": 2,
+    "events": [
+      {
+        "id": 4,
+        "date": "03-12",
+        "title": "Torn",
+        "description": "视觉系单曲，融合了前卫的MV拍摄手法，上线首周播放量破亿，成为年度热门MV。",
+        "cover": "@/assets/Cover/torn.jpg",
+        "bgUrl": "@/assets/Cover/torn.jpg",
+        "tags": [
+          "视觉系",
+          "高播放量"
+        ]
+      }
+    ]
+  },
+  {
+    "year": "2020",
+    "sort": 3,
+    "events": [
+      {
+        "id": 5,
+        "date": "09-18",
+        "title": "Heaven & Hell",
+        "description": "首张个人专辑，收录12首原创单曲，发行首周登顶Billboard 200专辑榜。",
+        "cover": "@/assets/Cover/heaven-hell.jpg",
+        "bgUrl": "@/assets/Cover/heaven-hell.jpg",
+        "tags": [
+          "首张专辑",
+          "榜单登顶"
+        ]
+      },
+      {
+        "id": 6,
+        "date": "11-06",
+        "title": "Kings & Queens",
+        "description": "女性力量单曲，歌词传递女性独立精神，全球流媒体播放量突破10亿次。",
+        "cover": "@/assets/Cover/kings-queens.jpg",
+        "bgUrl": "@/assets/Cover/kings-queens.jpg",
+        "tags": [
+          "女性力量",
+          "流媒体爆款"
+        ]
+      }
+    ]
+  }
+]

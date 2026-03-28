@@ -1,0 +1,9 @@
+._el_icon {
+  font-size: 17px;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #409eff;
+    transform: scale(1.2);
+  }
+}

@@ -1,0 +1,226 @@
+<template>
+  <div class="main-content">
+    <div v-if="newsList.length > 0" class="insta-grid">
+      <div
+        v-for="item in sortedNews"
+        :key="item.id"
+        class="grid-item glassy-background jumpy-transition"
+        :class="item.layoutClass"
+      >
+        <div class="card-inner">
+          <div class="cover-wrapper">
+            <img :src="imagePath(item.cover)" class="main-img">
+            <div v-if="item.type === 'video'" class="video-tag">
+              <i class="el-icon-caret-right" />
+            </div>
+            <div class="hover-overlay">
+              <div class="stats">
+                <span><i class="el-icon-view" /> {{ item.views }}</span>
+                <span><i class="el-icon-chat-dot-round" /> {{ item.comments }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-box glassy-background" :class="{ 'cb-today': headInfo.status === 'TODAY' } ">
+            <h3>{{ item.title }}</h3>
+            <span class="date">{{ item.date }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="no-news">暂无内容</div>
+  </div>
+</template>
+
+<script>
+import { getImagesUrl } from '@/utils/getImageUrl'
+export default {
+  name: 'MainContent',
+  props: {
+    newsList: {
+      type: Array,
+      default: () => []
+    },
+    headInfo: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data() {
+    return {
+    }
+  },
+  computed: {
+    sortedNews() {
+      // 保持时间排序，同时动态计算随机布局类名
+      return [...this.newsList]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .map((item) => {
+          const rand = Math.random()
+          let layoutClass = 'item-1x1' // 默认 1*1
+          if (rand > 0.8) layoutClass = 'item-2x1' // 横向 2*1
+          else if (rand > 0.6) layoutClass = 'item-1x2' // 纵向 1*2
+
+          return { ...item, layoutClass }
+        })
+    }
+  },
+  methods: {
+    // 切换则边栏布局
+    toggleSidebar() {
+      this.sidebarExpanded = !this.sidebarExpanded
+    },
+    // 计算图片路径
+    imagePath(path) {
+      return getImagesUrl(path)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.main-content {
+  // width: 100%;
+  overflow-y: auto;
+  height: 100%;
+  // padding: 20px;
+  position: relative;
+}
+
+.insta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-auto-rows: 140px;
+  grid-auto-flow: dense;
+  gap: 20px;
+}
+
+.grid-item {
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.05) !important;
+  }
+  &:active {
+    transform: scale(0.98) !important;
+    // transition: all 0.2s;
+  }
+
+  /* 修改：支持随机尺寸类名 */
+  &.item-1x1 {
+    grid-row: span 2;
+    grid-column: span 1;
+  } /* 基础大小 */
+  &.item-1x2 {
+    grid-row: span 3;
+    grid-column: span 1;
+  } /* 纵向拉伸 */
+  &.item-2x1 {
+    grid-row: span 2;
+    grid-column: span 2;
+  } /* 横向拉伸 */
+
+  .card-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .cover-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #121212;
+
+    .main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .video-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.5);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .hover-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      color: #fff;
+      .stats {
+        display: flex;
+        gap: 15px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .content-box {
+    position: relative; // 确保在背景图之上显示
+    z-index: 1;
+    padding: 15px;
+    border: none;
+    border-top: #409eff solid 2px;
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      background-color: #409eff;
+    }
+    .date {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #000;
+      background-color: #fff;
+    }
+  }
+
+  .cb-today {
+    border-top: #ff4d4f solid 2px !important;
+    h3 {
+      background-color: #ff4d4f !important;
+    }
+  }
+}
+
+.no-news {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: bold;
+  letter-spacing: 20px;
+  color: #fff;
+  text-shadow: 0 0 10px #fff;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>

@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/(audio|charts|lyrics|news|playList|releases|tour|albums|playlist)/:path*",
+      "destination": "/api/mock"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

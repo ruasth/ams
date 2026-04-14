@@ -24,6 +24,7 @@
     <div class="control-section functional-area glassy-background jumpy-transition_wt-bgcl">
       <div class="content-wrapper" @click="openLyricPage">
         <i class="el-icon-monitor icon-lyric" />
+        <!-- <router-link to="/lyric" class="el-icon-monitor icon-lyric" /> -->
       </div>
     </div>
   </div>

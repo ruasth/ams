@@ -12,21 +12,21 @@ module.exports = {
   lintOnSave: false,
   transpileDependencies: [],
   devServer: {
-    port: 9528,
+    port: 8080,
     open: true,
     overlay: {
       warnings: false,
       errors: true
     },
-    proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: 'http://localhost:9528',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
-      }
-    },
+    // proxy: {
+    //   [process.env.VUE_APP_BASE_API]: {
+    //     target: 'http://localhost:9528', // 本地调试
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       ['^' + process.env.VUE_APP_BASE_API]: ''
+    //     }
+    //   }
+    // },
     before: function(app) {
       mockServer(app)
     }

@@ -10,6 +10,7 @@
 
     <div class="annals-content-wrapper">
       <main class="gallery-wrapper">
+        <!-- 按钮 -->
         <button
           class="nav-btn prev"
           :disabled="activeIndex === 0"
@@ -18,6 +19,7 @@
           <i class="el-icon-arrow-left" />
         </button>
 
+        <!-- 内容区域 -->
         <div class="content-viewport">
           <transition :name="slideDirection" mode="out-in">
             <div :key="activeIndex" class="event-card">
@@ -29,17 +31,18 @@
                 <div class="info-box">
                   <h2 class="title">{{ currentData.title }}</h2>
                   <p class="desc">{{ currentData.description }}</p>
-                  <el-button
+                  <!-- <el-button
                     class="main-btn -white link-btn"
                     round
                     @click="$router.push('/annals')"
-                  >歌曲主页</el-button>
+                  >歌曲主页</el-button> -->
                 </div>
               </div>
             </div>
           </transition>
         </div>
 
+        <!-- 按钮 -->
         <button
           class="nav-btn next"
           :disabled="activeIndex === flatTimeline.length - 1"
@@ -49,6 +52,7 @@
         </button>
       </main>
 
+      <!-- 底部列表小球 -->
       <footer class="timeline-footer">
         <div class="timeline-track">
           <div

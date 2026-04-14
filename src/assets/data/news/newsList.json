@@ -2,42 +2,42 @@
   {
     "id": 1,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "【新照】Ava Max上街洛杉矶",
     "cover": "News/260305/z1/1.jpg", 
     "date": "2026-03-05"
   },
   {
     "id": 2,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "新歌登上巨幅广告牌！",
     "cover": "News/260305/z2/1.jpg",
     "date": "2026-03-05"
   },
   {
     "id": 3,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "时代广场被攻陷",
     "cover": "News/260306/1.jpg",
     "date": "2026-03-06"
   },
   {
     "id": 4,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "【快拍更新】乘车中",
     "cover": "News/260309/s1/1.jpg",
     "date": "2026-03-09"
   },
   {
     "id": 5,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "Ava Max为母亲送上母亲节祝福",
     "cover": "News/260309/t1/1.jpeg",
     "date": "2026-03-09"
   },
   {
     "id": 6,
     "type": "POST",
-    "title": "这个是标题",
+    "title": "空降！新歌登榜！",
     "cover": "News/260309/z1/1.jpg",
     "date": "2026-03-09"
   }

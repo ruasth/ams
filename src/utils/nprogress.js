@@ -3,20 +3,18 @@ import 'nprogress/nprogress.css'
 
 // 配置 NProgress
 NProgress.configure({
-  easing: 'ease',
-  speed: 500,
-  showSpinner: false,
-  trickleSpeed: 200,
-  minimum: 0.08,
-  parent: '#app'
+  easing: 'ease', // 缓动函数
+  speed: 500, // 递增动画速度
+  showSpinner: false, // 不显示右上角的加载圆圈
+  trickleSpeed: 200, // 自动递增间隔
+  minimum: 0.08, // 起始最小百分比
+  parent: '#app' // 进度条挂载的父容器
 })
 
 // 标志位：是否是首次加载页面
 let isFirstLoad = true
 
-/**
- * 初始化页面加载进度条
- */
+// 初始化页面加载进度条
 export function initPageLoadProgress() {
   if (typeof window === 'undefined') return
 

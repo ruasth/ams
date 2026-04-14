@@ -1,9 +1,11 @@
 <template>
-  <div class="app-wrapper">
-    <Navbar class="fixed-header navbar" />
-    <AppMain />
-    <SideBar class="sidebar" />
-    <ControlBar class="cotrolbar" />
+  <div class="position-for-lyric">
+    <div class="app-wrapper" :style="{'overflow-y': lyricState ? 'hidden' : 'auto'}">
+      <Navbar class="fixed-header navbar" />
+      <AppMain />
+      <SideBar class="sidebar" />
+      <ControlBar class="cotrolbar" />
+    </div>
     <LyricPage class="lyricpage" />
   </div>
 </template>
@@ -20,8 +22,13 @@ export default {
     Navbar,
     AppMain,
     ControlBar,
-    SideBar,
-    LyricPage
+    LyricPage,
+    SideBar
+  },
+  computed: {
+    lyricState() {
+      return this.$store.getters.getLyricState
+    }
   },
   created() {
     // this.initAudioList()
@@ -35,34 +42,45 @@ export default {
 
 <style lang="scss"  scoped>
 .app-wrapper {
-    position: relative;
-    /* height: 100%; */
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
 }
 
 .cotrolbar {
-    position: fixed;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 99;
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}
+</style>
+
+<style lang="scss" scoped>
+.position-for-lyric {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.isOpen {
+  overflow: hidden;
 }
 
 .lyricpage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    // transform: translate(-50%, -50%);
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  // transform: translate(-50%, -50%);
+  z-index: 100;
 }
 </style>

@@ -1,4 +1,5 @@
 import { getAudioList } from '@/api/audio'
+import { Message } from 'element-ui'
 
 const state = {
   songList: [], // 存储所有歌曲（id/title/audioUrl）
@@ -100,6 +101,12 @@ const actions = {
         targetSong = findSong
       } else if (!findSong) {
         console.warn('未找到指定ID的歌曲，默认播放列表第一首')
+        Message({
+          message: '未找到指定ID的歌曲，已为您默认播放列表第一首',
+          type: 'warning',
+          duration: 4000,
+          offset: 120
+        })
         targetSong = state.songQueue[0]
         commit('SET_CURRENT_SONG', targetSong)
       }
@@ -112,6 +119,7 @@ const actions = {
       // 播放结束后更新状态
       audio.onended = () => {
         commit('SET_PLAY_STATE', false)
+        dispatch('changeSong', 'prev')
       }
       // 获取歌曲总时长
       audio.onloadedmetadata = () => commit('SET_TOTAL_TIME', audio.duration)
@@ -119,11 +127,6 @@ const actions = {
       audio.onloadstart = () => commit('SET_TOTAL_TIME', 0)
       // 更新当前播放时间
       audio.ontimeupdate = () => {
-        // 只有没有在拖拽时才允许自动更新currentTime
-        // if (!this.isDragging) {
-        //   commit('SET_CURRENT_TIME', audio.currentTime)
-        // }
-        // commit('SET_CURRENT_TIME', audio.currentTime)
       }
       commit('SET_AUDIO_INSTANCE', audio)
     }

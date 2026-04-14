@@ -13,7 +13,10 @@
             <div v-if="item.type === 'video'" class="video-tag">
               <i class="el-icon-caret-right" />
             </div>
-            <div class="hover-overlay">
+            <div
+              class="hover-overlay"
+              @click="$emit('open', {id: item.id, title: item.title})"
+            >
               <div class="stats">
                 <span><i class="el-icon-view" /> {{ item.views }}</span>
                 <span><i class="el-icon-chat-dot-round" /> {{ item.comments }}</span>

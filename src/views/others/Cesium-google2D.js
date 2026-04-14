@@ -68,9 +68,32 @@ export function flyToStop(viewer, stop, entity) {
 
   if (!viewer || !stop) return
   viewer.camera.flyTo({
+    // destination: stop,
     destination: CesiumLib.Cartesian3.fromDegrees(stop.lng, stop.lat, 20000),
     duration: 1.5
   })
   // 设置当前站点为选择项
-  viewer.selectedEntity = entity.pointEntities
+  viewer.selectedEntity = entity
+}
+
+// 点击获取实体
+export function initHandler(viewer, onEntityClick) {
+  const handler = new CesiumLib.ScreenSpaceEventHandler(viewer.scene.canvas)
+
+  handler.setInputAction((e) => {
+    // 获取屏幕点击位置
+    const pick = viewer.scene.pick(e.position)
+    // 匹配点击位置的实体
+    if (CesiumLib.defined(pick)) {
+      const entity = pick.id
+      flyToStop(viewer, entity._stop_position, entity)
+      // 将实体传入回调传回组件
+      if (typeof onEntityClick === 'function') {
+        onEntityClick(entity)
+      }
+    }
+    // console.log(handler, pe)
+  }, CesiumLib.ScreenSpaceEventType.LEFT_CLICK)
+
+  return handler
 }

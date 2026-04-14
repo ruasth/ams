@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import mainContent from '@/components/NewsLayout/mainContent.vue'
-import haedRow from '@/components/NewsLayout/headRow.vue'
+import mainContent from './NewsLayout/mainContent.vue'
+import haedRow from './NewsLayout/headRow.vue'
 import { getNewsList } from '@/api/news'
 import { getImagesUrl } from '@/utils/getImageUrl'
 export default {

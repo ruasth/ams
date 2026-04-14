@@ -3,13 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-// import Cesium from 'cesium/Cesium'
-// import 'cesium/Build/Cesium/Widgets/widgets.css'
-// Vue.prototype.Cesium = Cesium // 将 Cesium 注册为 Vue 实例的属性
-
-import ElementUI from 'element-ui' // 引入element-ui
-import 'element-ui/lib/theme-chalk/index.css' // 引入element-ui的css
-Vue.use(ElementUI) // 全局注册element-ui
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
 
 import '@/icons/index.js' // 引入svg图标
 

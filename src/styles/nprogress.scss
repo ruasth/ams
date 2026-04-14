@@ -1,7 +1,7 @@
 /* 自定义 NProgress 样式 */
 #nprogress {
   .bar {
-    background: #409eff !important; /* 使用你的主题色 */
+    background: #409eff !important;
     height: 3px !important;
     box-shadow: 0 0 10px #409eff, 0 0 5px #409eff !important;
   }
@@ -15,7 +15,6 @@
     border-left-color: #409eff !important;
   }
   
-  /* 为你的布局位置 与导航栏一致 */
   .bar {
     position: fixed !important;
     top: 80px !important;

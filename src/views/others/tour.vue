@@ -2,23 +2,31 @@
   <div class="map-page">
     <bg-box />
     <!-- 内容窗口 -->
-    <div class="content-wrapper">
-      <!-- cesium实例显示区域 -->
-      <div id="my-map" class="map-window" />
-      <!-- 切换按钮 -->
-      <button class="normal-btn_foggy button next" @click="handleStops('n')">
-        <i class="el-icon-arrow-right" />
-      </button>
-      <button class="normal-btn_foggy button prev" @click="handleStops('p')">
-        <i class="el-icon-arrow-left" />
-      </button>
+    <div class="content-wrapper" :class="{ 'sideBar-isOpen': sideBarState }">
+      <div class="cw-position">
+        <!-- cesium实例显示区域 -->
+        <div id="my-map" class="map-window" />
+        <!-- 目录 -->
+        <div class="list-box">
+          <div class="list-title">巡演站点清单</div>
+          <el-tree :data="treeData" :props="defaultProps" node-key="id" @node-click="treeNodeClick" />
+        </div>
+        <!-- 切换按钮 -->
+        <button class="normal-btn_foggy button next" @click="handleStops('n')">
+          <i class="el-icon-arrow-right" />
+        </button>
+        <button class="normal-btn_foggy button prev" @click="handleStops('p')">
+          <i class="el-icon-arrow-left" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import eventBus from '@/utils/bus'
 // import { TCesium } from './TCesium'
-import { initMap, flyToStop } from './Cesium-google2D.js'
+import { initMap, flyToStop, initHandler } from './Cesium-google2D.js'
 import bgBox from '../../components/bg-box.vue'
 import { getTourList } from '../../api/tour.js'
 export default {
@@ -28,12 +36,18 @@ export default {
   data() {
     return {
       viewer: null, // viewer实例
+      handler: null, // handler实例
       activeIndex: 0, // 当前播放的巡演站点索引
       defaultRoute: 'europe',
+      sideBarState: false, // 是否显示侧边栏
+
       europeStops: [], // 欧洲巡演站点数据
       americanStops: [], // 美国巡演站点数据
       europeRouteEntities: [], // 欧洲巡演路线实体列表
-      americanRouteEntities: [] // 美国巡演路线实体实体列表
+      americanRouteEntities: [], // 美国巡演路线实体实体列表
+      defaultProps: {
+        label: `label`
+      }
     }
   },
   computed: {
@@ -42,9 +56,31 @@ export default {
       return this.defaultRoute === 'europe'
         ? this.europeStops
         : this.americanStops
+    },
+    // 树形控件数据
+    treeData() {
+      return [
+        {
+          label: '欧洲',
+          children: this.europeStops.map((stop) => {
+            return {
+              ...stop,
+              label: `${stop.country} ${stop.city} ${stop.venue}`
+            }
+          })
+        },
+        {
+          label: '美国',
+          children: this.americanStops.map((stop) => {
+            return {
+              ...stop,
+              label: `${stop.state} ${stop.city} ${stop.venue}`
+            }
+          })
+        }
+      ]
     }
   },
-  created() { },
   async mounted() {
     try {
       // 请求数据
@@ -53,6 +89,10 @@ export default {
       this.viewer = await initMap('my-map', {
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMDkyMGJlMi0xMGIxLTQwMzktYjc2NS00NjFhYTc4OGM1YzgiLCJpZCI6NDA2NDUzLCJpYXQiOjE3NzQxODcxMjl9.P5hXeNfGqdm9b9x0Rj46_2CAqu8KvhQKINquNKHl5tM'
+      })
+      // 初始化handler
+      this.handler = initHandler(this.viewer, (entity) => {
+        this.handleEntityClick(entity)
       })
       // 绘制巡演路线
       this.europeRouteEntities = this.drawRoute(this.europeStops, {
@@ -66,14 +106,22 @@ export default {
       // 设置视角
       const firstStop = this.europeStops[0]
       const targetEntity = this.findCurrentStop(firstStop)
-      flyToStop(this.viewer, firstStop, targetEntity)
+      flyToStop(this.viewer, firstStop, targetEntity.pointEntities)
     } catch (error) {
       console.error('地图初始化失败', error)
     }
+    // 监听事件总线发送的侧边栏状态
+    eventBus.$on('toggle-sidebar', (state) => {
+      this.sideBarState = state
+      console.log('侧边栏打开没', state)
+    })
   },
   beforeDestroy() {
     if (this.viewer) {
       this.viewer.destroy()
+    }
+    if (this.handler) {
+      this.handler.destroy()
     }
   },
   methods: {
@@ -100,7 +148,9 @@ export default {
         // name: `The Tour (Finally) 巡演路线-${s.id || '未知'}站`,
         description: `
     <div>
-      <p><strong>路线：</strong>${data === this.europeStops ? '欧洲' : '美国'}站</p>
+      <p><strong>路线：</strong>${
+  data === this.europeStops ? '欧洲' : '美国'
+}站</p>
       <p><strong>场次：</strong>共${data.length}场</p>
       <p><strong>时长：</strong>${data === this.europeStops ? '39' : '31'}天</p>
     </div>
@@ -120,14 +170,18 @@ export default {
       // console.log(tourInfo.stops)
       data.forEach((stop) => {
         const pointEntities = this.viewer.entities.add({
-          name: `On Tour (Finally) 巡回演出路线图`,
+          // name: `On Tour (Finally) 巡回演出路线图`,
+          _stop_position: { lng: stop.lng, lat: stop.lat },
+          _stop_route: `${stop.country ? 'europe' : 'american'}`,
+          _stop_id: `${stop.id}`,
           // name: `Ava Max - The Tour (Finally) 欧美巡回演出路线图`,
-          // name: `${stop.country || stop.state}${stop.city}\n${stop.venue}\n${stop.date
-          // }`,
+          name: `${stop.country || stop.state}${stop.city}站`,
           position: Cesium.Cartesian3.fromDegrees(stop.lng, stop.lat),
           description: `
     <div>
-      <p><strong>路线：</strong>${data === this.europeStops ? '欧洲' : '美国'}站</p>
+      <p><strong>路线：</strong>${
+  data === this.europeStops ? '欧洲' : '美国'
+}站</p>
       <p><strong>地点：</strong>${stop.country || stop.state} ${stop.city}</p>
       <p><strong>场馆：</strong>${stop.venue}</p>
       <p><strong>场次：</strong>第${stop.id}场</p>
@@ -153,19 +207,14 @@ export default {
         })
         routeEntities.push({ pointEntities, id: stop.id })
       })
-
-      console.log(routeEntities)
       return routeEntities
     },
     // 获取巡演路线数据
     async getTourData() {
       try {
         const res = await getTourList()
-        console.log(res)
         this.europeStops = res.data.tourList.europe
         this.americanStops = res.data.tourList.american
-        // console.log(this.europeStops)
-        // console.log(this.americanStops)
       } catch (error) {
         console.warn('获取巡演路线数据失败', error)
       }
@@ -174,13 +223,14 @@ export default {
     findCurrentStop(stop) {
       // 选择当前站点数据列表
       const currentEtities =
-        this.defaultRoute === 'europe'
+        stop.country
           ? this.europeRouteEntities
           : this.americanRouteEntities
       // 在数据列表中查找id相同的实体
       const targetEntity = currentEtities.find((item) => {
         return stop.id === item.id
       })
+
       // 返回实体
       return targetEntity
     },
@@ -205,7 +255,7 @@ export default {
         } else {
           this.defaultRoute =
             this.defaultRoute === 'europe' ? 'american' : 'europe'
-          index = this.currentRoute.lrngth - 1
+          index = this.currentRoute.length - 1
         }
       }
 
@@ -214,7 +264,27 @@ export default {
       const targetStop = this.currentRoute[index]
       const targetEntity = this.findCurrentStop(targetStop)
       // 设置到当前站点视角
-      flyToStop(this.viewer, targetStop, targetEntity)
+      flyToStop(this.viewer, targetStop, targetEntity.pointEntities)
+    },
+    // 点击实体同步路线与索引
+    handleEntityClick(entity) {
+      if (!entity) return
+      // 同步路线
+      this.defaultRoute = entity._stop_route
+      // 同步索引
+      this.activeIndex = this.currentRoute.findIndex(item => {
+        return item.id === entity._stop_id
+      })
+    },
+    // 树形控件子节点数据
+    treeNodeClick(data) {
+      if (!data.id) return
+      // 从树形节点返回的数据找到对应实体
+      const entity = this.findCurrentStop(data)
+      // 同步路线与索引
+      this.handleEntityClick(entity.pointEntities)
+      // 设置到当前站点视角
+      flyToStop(this.viewer, data, entity.pointEntities)
     }
   }
 }
@@ -226,59 +296,126 @@ export default {
   width: 100%;
   height: calc(100vh - 80px);
   background-color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
   position: relative;
 }
 
 .content-wrapper {
   width: 75vw;
-  height: auto;
+  height: 75vh;
   box-shadow: 0 0 0 rgba(64, 158, 255, 0);
   // border: 1px solid #ff7d40;
   border: 1px solid rgba(64, 158, 255, 1);
   border-radius: 20px;
   overflow: hidden;
+  display: flex;
 
   transition: all 0.2s ease-in-out !important;
-  position: relative;
-  // top: 50%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
   &:hover {
     box-shadow: 0 6px 20px rgba(64, 158, 255, 0.7);
     border: 1px solid rgba(64, 158, 255, 0.7);
-
     .map-controls {
       border-top: 1px solid rgba(64, 158, 255, 0.7);
     }
   }
 
-  .map-window {
+  .cw-position {
     width: 100%;
-    height: 75vh;
-  }
-
-  .button {
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    border-radius: 50%;
-    box-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
-    font-size: 23px;
-    position: absolute;
-    top: 50%;
-
-    // transform: translateY(-50%);
-    &.next {
-      right: 5%;
+    height: auto;
+    background-color: aqua;
+    position: relative;
+    // 地图容器
+    .map-window {
+      width: 100%;
+      height: 75vh;
+      position: relative;
     }
+    // 站点列表
+    .list-box {
+      width: 16%;
+      height: 75vh;
+      background: rgba(38, 38, 38, 0.95);
 
-    &.prev {
-      left: 5%;
+      overflow-y: auto;
+      justify-content: center;
+
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      .list-title {
+        height: 5%;
+        background: rgba(84, 84, 84, 1);
+        color: #edffff;
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    // 按钮
+    .button {
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      border-radius: 50%;
+      box-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
+      font-size: 23px;
+      position: absolute;
+      top: 50%;
+      z-index: 1;
+      &.next {
+        right: 5%;
+      }
+      &.prev {
+        left: 21%;
+      }
     }
   }
+}
+.sideBar-isOpen {
+  width: 82vw;
+  height: 75vh;
+
+  top: 50%;
+  left: 57%;
+  transform: translate(-50%, -50%);
+}
+</style>
+
+<style scoped>
+* {
+  font-family: sans-serif;
+}
+
+.el-tree {
+  background: #ffffff00;
+  color: #edffff;
+}
+
+::v-deep .el-tree-node__label {
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+::v-deep .el-tree-node:focus > .el-tree-node__content {
+  background-color: #0f4493 !important;
+}
+::v-deep .el-tree-node__content:hover {
+  background-color: #0f4493 !important;
+}
+::v-deep .el-tree-node__content:active {
+  background-color: #0f4493 !important;
 }
 </style>

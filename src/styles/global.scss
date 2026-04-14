@@ -1,6 +1,8 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Ubuntu;
 }
 
 html,
@@ -45,6 +47,8 @@ html {
   --border-DND: #34ace0;
   --border-DCP: #ffb142;
 }
+
+/// * // * /// * // * /// * // * /// * // * /// * // * ///
 
 // 经常用的active样式 封装成mixin
 @mixin active-bgcl {
@@ -128,6 +132,29 @@ html {
 /// glassy-background -> 玻璃背景
 /// normal-btn -> 通用按钮 / + _white -> 白色按钮 / + _foggy -> 雾按钮
 /// narmal-btn 本身包含了 jumpy-transition + glassy-background 只是transition不同
+
+
+/// * // * /// * // * /// * // * /// * // * /// * // * ///
+
+// 改造element消息弹窗样式
+.el-message--warning {
+  @extend .glassy-background;
+}
+.el-message__content.el-icon-warning {
+  color: var(--accent-cyan) !important;
+  text-shadow: var(--shadow-blue) !important;
+}
+
+// 改造dialog弹窗样式
+// .el-dialog {
+//   @extend .glassy-background !optional;
+//   // width: 60% !important;
+//   // height: 70%;
+//   // margin-top: 0 !important;
+//   // top: 53%;
+//   // transform: translateY(-50%);
+// }
+
 
 /* #app {
   width: 100%;

@@ -1,205 +1,139 @@
-* 组件的滚动覆盖效果：
+# AvaMax-Music-Station
 
-- 组件的具体效果:
- 当组件1到达顶部后固定，组件2层级高于组件1，向上滚动就会覆盖组件1，等到组件2到顶部固定
+> 该项目是一个一站式歌手资料粉丝站。使用 Mock + vue.config.js + Axios 虚拟数据请求，项目中用到 Vue Router 和 Element UI & ECharts & Cesium 等第三方库构建页面，其他如 Vuex & Nprogress 等。
 
-- 在home中几个组件本体其实一样，因此可以创建一个共同逻辑mixin混入和vuex模块方法处理给它们使用
-- state中先存储基本数据:
- StickyElement: { // 组元素的信息
-    id: 唯一标识
-    name: 元素名字
-    offsetTop: 距离视口顶部的偏移量
-    isFixed: 固定状态
-    height: 元素高度 vh
- },
- scrollTop: 元素滚动的距离,
- stickyOffet: 固定偏移量 navbar的高度,
-- mixin中定义基本数据
- props: {
-    // 元素名字(home传入)，元素高度，固定偏移量(80)
-    stickyNmae,
-    stickyHeight,
-    StickyOffset,
- }
- data() {
-    return {
-        stickyId: null,
-    }
- }
+---
 
-- 首先，计算元素的绝对位置
- 1. 获取元素的引用 // 元素中都会传递ref="stickyElement"
- const element = this.$refs.stickyElement
- 2. 计算元素相对视口的位置
- // getBoudingClientRect方法会计算元素相对于视口左上的位置
- // .top 元素顶部距离顶部
- // .bottom 元素底部距离顶部
- // .left 元素左侧距离左侧
- // .right 元素右侧距离左侧
- const rect = element.getBoudingClientRect()
- 3. 计算相对于文档顶部的位置
- // scrollTop得出的是文档顶部被滚动的偏移量
- const scrollTop = window.pageYOffset || document documentElement.scrollTop
- 4. 计算
- // rect.top表示元素顶部相对视口顶部的距离 scrollTop表示文档滚动的距离 这两个值会互相抵消 因此得出元素在页面中的绝对位置
- return rect.top + scrollTop
+## Mock 虚拟数据方案说明
 
-- 注册组件
- 在vuex中定义action注册组件
- registerToStore({ commit }, element) {
-    const id = element.id
-    commit('ADD_ELEMENT', {
-        ...element,
-        id
+本项目的 Mock 方案采用 自动化注册 + 模块化配置 的设计模拟后端接口，支持动态响应、参数校验、错误模拟等特性。
+
+### 核心设计思路：
+
+每个业务模块独立一个 .js 文件（如 audio.js），导出该模块所有 Mock 接口配置。
+
+mock/index.js 自动扫描 mock/ 目录下的所有 .js 文件，动态注册到 devServer。
+
+通过环境变量 VUE_APP_MOCK 控制是否启用 Mock。
+
+### 接口注册流程
+
+1. 启动项目，vue.config.js 的 before 钩子调用 mockServer()
+2. mock/index.js 被加载，判断 VUE_APP_MOCK 是否为 true
+3. 开始执行 mockServer()，利用 Node.js 自带的 fs 模块遍历得到 mock/ 目录下除 index 外的所有 .js 文件
+4. 所有接口模块都是以 module.exports = [] 的形式导出的，对该模块导出的数组进行遍历，得到每个接口的配置
+5. 调用 app.get 或 app.post 将接口注册到 devServer 路由表中
+6. 当组件发出请求时，跟据请求路径触发对应接口的 response，实现 Mock 数据的拦截和响应
+
+## 完整流程
+
+[启动项目]
+vue.config.js 的 before 钩子调用 mockServer()
+[mock/index.js]
+1. 判断 VUE_APP_MOCK 是否为 true
+2. fs.readdirSync(\_\_dirname) 获取 mock/ 目录下所有文件
+3. 遍历接口模块文件，排除 index.js
+4. 获取接口模块导出的数组，遍历数组，得到每个接口的配置
+5. 将接口注册到 Express 内部的路由表中
+    app[method](fullUrl, (req, res) => {
+        const result = item.response(req)
+        res.json(result)
     })
-    return
- }
- 调用mutation的ADD_ELEMENT 把元素信息存入状态列表
- ADD_ELEMENT(state, element) {
-    state.stickyElement.push(element)
- }
- 在mixin里 挂载完成后就会注册元素
- mounted() {
-    this.$nextTick(() => {
-        this.registerToStore()
-    })
- }
- methods中:
- registerToStore() {
-    // 调用计算位置函数返回位置
-    const offsetTop = this.getElementOffsetTop()
-    // 生成id
-    const id = `${this.stickyName} - ${Date.now()}`
-    // 调用action
-    this.$store.dispatch('sticky/registerElement',
-    {
-        // 传入元素信息
-        id: id,
-        name: this.stickyName,
-        offsetTop: offsetTop,
-        height: this.stickyHeight,
-        isFixed: false
-    }).then((resId) => { this.stickyId = resId })
-    // registerToStore会触发ADD_ELEMENT把元素信息存到state完成注册 同时返回id
- }
+    - app：Express 应用实例，也就是 devServer 内部的那个服务器对象
+    - method：接口请求方法，对应app 的路由注册方法
+    - fullUrl：接口请求路径，对应 app[method] 的第一个参数
+    - req（request 对象）：包含了浏览器发来的请求信息，比如 URL 参数（req.query）、请求体（req.body）、请求头（req.headers）等。
+    - res（response 对象）：用来构建并发送响应给浏览器。它有一系列方法，比如 res.json()、res.send()、res.status() 等。
+    - item.response：接口的响应函数，返回一个对象，该对象会被 res.json() 方法序列化为 JSON 格式，并作为响应体发送给浏览器。
+6. 注册完成，devServer 启动完毕，此时路由表里有类似这样的条目（伪代码）：
+    - 方法：GET
+    - 路径：/api/audio/list
+    - 处理函数：(req, res) => { const result = item.response(req); ... }
+[组件发出请求]
+调用 getAudioList()
+[axios实例]
+baseURL = '/api' （从 .env 读取）
+url = '/audio/list'
+完整请求地址 = http://localhost:9528/api/audio/list
+[浏览器]
+发送 GET 请求到 devServer
+[devServer]
+1. 在路由表中找到对应请求地址的路由信息 → GET /api/audio/list (req, res) => { ... }
+2. 执行这个回调
+3. 调用 audio.js 中定义的 response 函数
+[response]
+1. 读取 audioList.json（启动时已加载到内存）
+2. 执行逻辑（如分页、查找等）
+3. 返回对象 { code: 20000, data: {...} }
+[devServer]
+res.json(result) 发送 JSON 响应
+[浏览器]
+收到响应
+[axios响应拦截器]
+检查 res.code === 20000 ？
+   - 是 → 返回 res
+   - 否 → 弹出错误提示
+[Vue组件]
+拿到最终数据，渲染页面
 
-- 组件获取自动状态
- 将注册组件时返回的id传入查询状态的getter中
- 在computed中调用这个getter
- computed: {
-    elementState() {
-        // 注册之后才有id
-        if (!this.sticktId) return
-        // getter闭包传参
-        return this.$store.getters['sticky/getElemenState'](this.stickyId)
-    }
- }
- 定义getter
- getElementState: (state) => (id) => {
-    const element = this.state.stickyElement.find(item => item.id === id)
-    // 如果element存在 返回状态列表存储的元素数据
-    if element ? return {...element} : {}
- }
- 在computed计算元素的状态
- isStickyFixed() {
-    // 跟据getter中返回的isFixed判断状态
-    return this.getElementState.isFixed || false
-    // 返回后 组件就有了isFixed
- }
+---
 
-- 滚动监听状态
- handleScroll({ commit, state }) {
-    // 获取页面滚动偏移量
-    const scrollTop = window.pageYOffset || document documentElement.scrollTop
+## 页面设计
 
-    state.stickyElement.forEach((item) => {
-        // 因为页面滚动和元素相对偏移量是抵消的 所以当scrollTop>=offsetTop减去固定偏移量时 说明元素已经到达固定的位置了 返回给shoundFixes一个true
-        const shoundFixed = scrollTop >= item.offsetTop - item.stickyOffset
-        // 把应该固定的元素设置为固定状态
-        if (shoundFixed !== item.isFixed) {
-            // 调用更新状态mutation
-            commit('UPDATE.ISFIXED.STATE', {
-                id: item.id,
-                isFixed: shoundFixed
-            })
-        }
-    })
- }
- // 调用mutation
- UPDATE_ISFIXED_STATE(state, {id, isFixed}) {
-    // 使用find寻找需要改变状态的元素
-    const element = state.stickyElement.find(item => item.id === id)
-    if(element) element.isFixed = isFixed
- }
+页面由统一的Layout层导入到 App.vue，其中包含 Header & AppMain 主控区域，根据路由变化动态渲染子组件。
+ControlBar & LyricsBar & SideBar 实现歌曲播放相关功能
 
-- 初始化滚动监听
- 定义初始化action组件
- initScrollListener({ dispatch }) {
-    // 首先处理一次位置
-    dispatch('handleScroll')
-    // 为window添加监听事件 这个监听放在home的index中
-    window.addEventListener('scroll', () => dispatch('handleScroll'))
- }
- // 在home的index的mounted中添加这个监听器
- mounted() {
-    this.$nextTick(() => {
-        this.store.diapatch('sticky/initScrollListener')
-    })
- }
+### 路由设计
 
-- 计算塌陷区域的高度
- 定义计算总高度的getter
- totalFixedHeight: (state) => {
-    state.stickyElement
-    // 先把状态列表里处于激活的元素筛选出来
-    .filter((item) => item.isFixed)
-    // 累加计算总高度
-    // reduce((初始值从这里开始加, 每个item) => total + item的高, 初始值设置为0)
-    .reduce((total, item) => total + item.height, 0)
- }
- 在home的indedx中调用这个getter
- computed:{
-    ...mapGetters('sticky', ['totalFixedHeight'])
+Layout
+  - Header
+  - SideBar
+  - ControlBar
+  - LyricsBar
+  - AppMain
+    - Home
+    - Annals
+    - Realeases
+    - News
+    - Tour
+    - PlayList
+    - Feed
+    - Charts
+      - Albums
+      - Singles
+      - Accounts
 
-    blanckHeight() {
-        return `calc(100vh + ${this.totalFixedHeight}vh + 80px)`
-    }
- }
+### NProgress加载进度条
 
-* vue.config.js与Mock模拟数据请求
+基于 NProgress 库实现的这个进度条，用于在页面加载和路由切换时在浏览器顶部显示一个细长的进度动画，提升用户体验。
 
-- 大致流程
-  1. 'vue.config.js' 
-    触发条件：当 VUE_APP_MOCK = true 环境变量设置时
-    执行时机：在 Webpack Dev Server 启动之前
-    作用：将 Mock 服务器挂载到 Express 应用实例上
+核心功能
+- 首次加载页面：显示进度条，页面完全加载后自动消失。
+- 路由切换：当用户点击菜单切换页面时，再次显示进度条，新组件渲染完成后隐藏。
+- 错误处理：路由加载失败时，主动结束进度条并打印错误。
 
-  2. 'mock/index.js' - Mock 服务器入口
-    路由注册：将 news.js 中的路由配置注册到 Express 应用
-    延迟模拟：添加 300ms 延迟模拟真实网络请求
-    统一处理：为所有 Mock 接口提供一致的响应格式
+主要配置
+NProgress.configure({
+  easing: 'ease',      // 动画缓动函数
+  speed: 500,          // 递增动画速度（毫秒）
+  showSpinner: false,  // 不显示右上角的加载圆圈
+  trickleSpeed: 200,   // 自动递增间隔
+  minimum: 0.08,       // 起始最小百分比
+  parent: '#app'       // 进度条挂载的父容器
+})
 
-  3. 'mock/news.js' - 新闻数据 Mock 配置
-    数据源：从 JSON 文件加载静态数据
-    接口定义：
-      · URL: /vue-element-admin/news/list
-      · 方法: GET
-      · 响应格式: {code, data: {total, items}}
+utils/nprogress.js 中导出四个方法：
+1. initPageLoadProgress()
+  - 作用：页面初始化时监听 document.readyState 和 window.load，处理首次页面加载的进度条
+  - 调用：在 router/index.js 创建路由后执行
+2. startRouteProgress() 
+  - 作用：非首次加载的路由跳转时启动进度条
+  - 调用：在 router.beforeEach 前置守卫中调用
+3. finishRouteProgress() 
+  - 作用：路由跳转完成后延迟 300ms 后结束进度条
+  - 调用：在 router.afterEach 后置守卫中调用
+4. handleRouteError() 
+  - 作用：路由加载失败时，主动结束进度条并打印错误。
+  - 调用：在 router.onError 中调用
 
-  4. 'src/api/news.js' - API 接口封装
-    接口抽象：将具体的 URL 和请求方法封装成函数
-    统一管理：便于维护和复用
-
-  5. 'src/utils/request.js' - Axios 实例配置
-    基础配置：设置超时时间和基础 URL
-    响应拦截：
-      · 检查 code 是否为 20000（成功状态码）
-      · 统一错误处理
-      · 返回数据格式统一化
-   
-   - 完整流程
-     1. 组件通过api发起请求 ->
-     2. axios实例配置 ->
-     3. Webpack Dev Server / before钩子函数: require('./mock')(app) ->
-     4. 'mock/news.js' 路由匹配与处理 ->
-     5. 'mock/news.js' 读取 JSON 数据并返回
+---

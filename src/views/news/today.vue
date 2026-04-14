@@ -1,13 +1,13 @@
 <template>
   <div class="news-today">
     <haedRow :head-info="headInfo" />
-    <mainContent :news-list="newsList" :head-info="headInfo" />
+    <mainContent :news-list="newsList" :head-info="headInfo" @open="onClickNews" />
   </div>
 </template>
 
 <script>
-import mainContent from '@/components/NewsLayout/mainContent.vue'
-import haedRow from '@/components/NewsLayout/headRow.vue'
+import mainContent from './NewsLayout/mainContent.vue'
+import haedRow from './NewsLayout/headRow.vue'
 import { getNewsList } from '@/api/news'
 import { getImagesUrl } from '@/utils/getImageUrl'
 export default {
@@ -42,6 +42,10 @@ export default {
     // 计算图片路径
     imagePath(path) {
       return getImagesUrl(path)
+    },
+    // 打开新闻
+    onClickNews(id) {
+      console.log(id)
     }
   }
 }

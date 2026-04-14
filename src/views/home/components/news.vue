@@ -1,6 +1,8 @@
 <template>
   <div ref="stickyElement" class="news" :class="{ 'is-fixed': isStickyFixed }">
-    <div class="news-bg-canvas" />
+    <!-- <div class="news-bg-canvas" /> -->
+    <!-- 背景 -->
+    <bg-box class="bg-box" style="z-index: -1" />
 
     <div class="news-container" :class="{ 'animate-start': isStickyFixed }">
 
@@ -44,10 +46,14 @@
 </template>
 
 <script>
+import bgBox from '@/components/bg-box.vue'
 import stickyMixin from '@/mixin/sticky.js'
 
 export default {
   name: 'News',
+  components: {
+    bgBox
+  },
   mixins: [stickyMixin]
 }
 </script>
@@ -56,6 +62,7 @@ export default {
 .news {
   width: 100%;
   height: 100vh;
+  background-color: #000;
   position: relative;
   top: 80px;
   left: 0;

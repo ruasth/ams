@@ -50,23 +50,12 @@
 
 <script>
 import stickyMixin from '@/mixin/sticky.js'
-// import { getNewsList } from '@/api/news'
 export default {
   name: 'Annals',
   mixins: [stickyMixin],
   created() {
-    // this.getNewsList() // 在组件创建时手动触发执行
   },
   methods: {
-    // async getNewsList() {
-    //   // console.log('正在发起请求...')
-    //   try {
-    //     const res = await getNewsList()
-    //     console.log('请求成功，返回数据：', res)
-    //   } catch (error) {
-    //     console.error('请求失败：', error)
-    //   }
-    // }
   }
 }
 </script>

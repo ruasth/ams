@@ -1,6 +1,6 @@
 <template>
   <transition name="lyric-trans">
-    <div v-if="isLyricing" class="lyric-page">
+    <div v-if="isLyricing" class="lyric-page" @wheel="handleWheel">
       <div class="bg-layer" :style="{ backgroundImage: `url(${currentCover})` }" />
       <div class="bg-masker">1</div>
 
@@ -216,10 +216,15 @@ export default {
         })
       },
       immediate: true
+    },
+    // 监听歌词面板状态判断主页滚动条是否禁用
+    isLyricing(newVal) {
+      this.$store.dispatch('sticky/listeningDisabled', newVal)
     }
   },
   beforeDestroy() {
     if (this.scrollTimer) clearTimeout(this.scrollTimer)
+    this.$store.dispatch('sticky/listeningDisabled', false)
   },
   methods: {
     ...mapActions('lyric', ['setLyricState']),
@@ -405,6 +410,7 @@ export default {
     handleWheel(e) {
       // console.log('鼠标滚动中')
       e.preventDefault()
+      e.stopPropagation()
       this.isUserScroll = true
       // this.activateManualScroll()
       this.manualOffset += e.deltaY
@@ -451,7 +457,6 @@ export default {
 
       this.$nextTick(() => {
         this.calculateScrollPosition()
-        // this.handleWheel()
       })
     },
     // 播放控制

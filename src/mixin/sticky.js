@@ -44,11 +44,14 @@ export default {
     // 1. 获取当前元素的固定状态
     // 组件内直接用 this.isStickyFixed 就能拿到 true/false
     isStickyFixed() {
-      return this.elementState.isFixed || false
+      const Tag = this.elementState.isFixed || false
+      if (Tag) this.fixedTag = Tag
+      return Tag
+      // const Tag = this.fixedTag = this.elementState.isFixed || false
+      // return Tag
     },
 
     // 2. 从 Store 获取当前组件的状态对象
-    // 使用 getter 闭包传参的方式
     elementState() {
       if (!this.stickyId) return {}
       return this.$store.getters['sticky/getElementState'](this.stickyId)
@@ -81,10 +84,6 @@ export default {
     // 3.注册固定元素
     registerToStore() {
       this.$nextTick(() => {
-        // 将组件的ref存起来并返回
-        // const el = this.$refs.stickyElement
-        // if (!el) return
-
         // // --- 核心逻辑：计算绝对位置 ---
         // // 获取元素距离文档顶部的绝对距离 (scrollY + rect.top)
         // // 这里获取的是初始位置，一旦固定后这个位置就不准了，所以只注册一次

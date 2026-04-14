@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Layout from '@/layout'
+// import Lyric from '@/layout/lyric/index'
 import {
   initPageLoadProgress,
   startRouteProgress,
@@ -57,13 +58,13 @@ const routes = [
             name: 'Today News',
             component: () => import('@/views/news/today'),
             meta: { title: '今日新闻' }
-          },
-          {
-            path: '/news/videos',
-            name: 'Video News',
-            component: () => import('@/views/news/videos'),
-            meta: { title: '视频新闻' }
           }
+          // {
+          //   path: '/news/videos',
+          //   name: 'Video News',
+          //   component: () => import('@/views/news/videos'),
+          //   meta: { title: '视频新闻' }
+          // }
         ]
       },
       // 数据馆
@@ -81,19 +82,19 @@ const routes = [
           },
           {
             path: '/charts/albums',
-            name: 'HNH',
+            name: 'Albums Charts',
             component: () => import('@/views/charts/albums'),
             meta: { title: '榜单图表 - 专辑' }
           },
           {
             path: '/charts/singles',
-            name: 'DND',
+            name: 'Singles Charts',
             component: () => import('@/views/charts/singles'),
             meta: { title: '榜单图表 - 单曲' }
           },
           {
             path: '/charts/accounts',
-            name: 'DCP',
+            name: 'Accounts Charts',
             component: () => import('@/views/charts/accounts'),
             meta: { title: `榜单图表 - 账号` }
           }
@@ -123,7 +124,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
@@ -144,7 +145,7 @@ router.beforeEach((to, from, next) => {
 
   // 设置页面标题
   if (to.meta.title) {
-    document.title = `AMS | ${to.meta.title}`
+    document.title = to.meta.title ? `AMS | ${to.meta.title}` : 'AMS'
   }
 
   next()

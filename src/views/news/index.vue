@@ -14,15 +14,6 @@
         <span v-if="sidebarExpanded" class="sidebar-title">探索中心</span>
       </div>
 
-      <!-- <transition name="slide">
-        <div v-if="sidebarExpanded" class="sidebar-intro">
-          <div class="intro-card">
-            <h4>今日简报</h4>
-            <p>当前共有  条新资讯，包含 5 个视频动态。</p>
-          </div>
-        </div>
-      </transition> -->
-
       <div class="sidebar-nav">
         <!-- all -->
         <router-link
@@ -43,14 +34,14 @@
           <span v-if="sidebarExpanded">今日新闻</span>
         </router-link>
         <!-- video -->
-        <router-link
+        <!-- <router-link
           class="nav-item"
           to="/news/videos"
           active-class="active"
         >
           <i class="el-icon-video-camera-solid" />
           <span v-if="sidebarExpanded">视频专区</span>
-        </router-link>
+        </router-link> -->
       </div>
     </aside>
 

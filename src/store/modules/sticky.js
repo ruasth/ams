@@ -8,7 +8,7 @@
 
 const state = () => ({
   /**
-   * 1.所有需要监控的固定元素的信息
+   * 所有需要监控的固定元素的信息
    * @typedef {Array} stickyElements
    * @property {string} id - 唯一标识
    * @property {string} name - 元素名称
@@ -17,13 +17,9 @@ const state = () => ({
    * @property {number} height - 元素高度 vh
    */
   stickyElements: [], // 存储元素信息
-
-  // 2.当前滚动位置
-  scrollTop: 0,
-
-  // 3.固定偏移量
-  stickyOffset: 80 // 当元素距离顶部达到这个偏移量时，触发固定
-
+  scrollTop: 0, // 当前滚动位置
+  stickyOffset: 80, // 当元素距离顶部达到这个偏移量时，触发固定
+  isDisabled: false // 是否禁用滚动
 })
 
 const mutations = {
@@ -31,7 +27,6 @@ const mutations = {
   ADD_ELEMENT(state, element) {
     state.stickyElements.push(element)
   },
-
   // 2.更新元素的固定状态
   // 当元素要触发固定时 就会调用此方法 传入其id和固定状态用以更新
   UPDATE_ISFIXED_STATUS(state, { id, isFixed }) {
@@ -40,15 +35,19 @@ const mutations = {
     // 找到了 更新其固定状态
     if (element) element.isFixed = isFixed
   },
-
   // 3.从状态列表中删除元素
   REMOVE_ELEMENT(state, id) {
     // 跟据传入的id在状态列表中查找这个元素
     const index = state.stickyElements.findIndex(item => item.id === id)
     // 找到了 删除这个元素
     if (index !== -1) state.stickyElements.splice(index, 1)
-  }
+  },
+  // 修改禁用状态
+  SET_DISABLES_STATE(state, disabled) {
+    console.log('修改状态', disabled)
 
+    state.isDisabled = disabled
+  }
 }
 
 const actions = {
@@ -69,6 +68,10 @@ const actions = {
 
   // 3.滚动监听组件状态
   handleScroll({ commit, state }) {
+    // 如果禁用了滚动监听 就直接返回
+    console.log('监听状态', state.isDisabled)
+    if (state.isDisabled) return
+
     window.requestAnimationFrame(() => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop
 
@@ -93,6 +96,13 @@ const actions = {
     dispatch('handleScroll')
     // 然后监听滚动事件 这个监听放在index.vue里
     window.addEventListener('scroll', () => dispatch('handleScroll'))
+  },
+
+  // 5.禁用滚动监听
+  listeningDisabled({ commit }, disabled) {
+    console.log('拿到新值', disabled)
+
+    commit('SET_DISABLES_STATE', disabled)
   }
 }
 

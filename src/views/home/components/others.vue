@@ -31,7 +31,7 @@
       </router-link>
     </div>
     <!-- 底部 -->
-    <div class="footer glassy-background jumpy-transition">1</div>
+    <!-- <div class="footer glassy-background jumpy-transition">1</div> -->
   </div>
 </template>
 
@@ -56,14 +56,39 @@ export default {
   justify-content: center;
   flex-direction: column;
   position: relative;
+  // 动画
+  // .header-info,
+  // .others-contents,
+  // .footer {
+  //   opacity: 0;
+  //   transform: translateY(60px);
+  //   transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  // }
+  // &.animate-start {
+  //   .header-info{
+  //     opacity: 1;
+  //     transform: translateY(0);
+  //   }
+  //   .others-contents {
+  //     opacity: 1;
+  //     transform: translateY(0);
+  //     transition-delay: 0.2s;
+  //   }
+  //   .footer {
+  //     opacity: 1;
+  //     transform: translateY(0);
+  //     transition-delay: 0.4s;
+  //   }
+  // }
 }
 
+// 顶部占位
 .head-blank {
   // background-color: #12229a;
   width: 100%;
   height: 5vh;
 }
-
+// 标题
 .header-info {
   width: 100%;
   height: 10vh;
@@ -76,7 +101,7 @@ export default {
     text-align: center;
   }
 }
-
+// 内容区域
 .others-contents {
   width: 100%;
   height: 60vh;
@@ -145,7 +170,7 @@ export default {
     background: url(../../../assets/AvaMax/otherpage/o3.jpg) center / cover;
   }
 }
-
+// 底部
 .footer {
   width: 100%;
   height: 15vh;

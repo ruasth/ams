@@ -14,6 +14,7 @@
             class="songList"
             :class="item.id === currentSong ? 'is-current' : 'not-current'"
             @dblclick="playSong(item.id)"
+            @click="imagePath(item.id)"
           >
             <div class="cover-box">
               <i
@@ -25,7 +26,7 @@
                 "
                 @click="handleGlobalPlay(item.id)"
               />
-              <img src="@/assets/Cover/salt.jpg">
+              <img :src="imagePath(item.id)">
             </div>
             {{ item.title }}
           </div>
@@ -49,7 +50,7 @@
 import eventBus from '@/utils/bus' // 引入事件总线
 import { mapGetters, mapActions } from 'vuex'
 import { handleGlobalPlay } from '@/utils/globalPlay.js'
-
+import { getImagesUrl } from '@/utils/getImageUrl'
 export default {
   name: 'Sidebar',
   data() {
@@ -118,13 +119,13 @@ export default {
     // 侧边栏打开关闭
     toggleSideBar() {
       this.isShowSideBar = !this.isShowSideBar
-      this.emitSideBarState()
+      // this.emitSideBarState()
       eventBus.emitState('toggle-sidebar', this.isShowSideBar)
-
-      // const currentState = this.isShowSideBar
-      // const newState = !currentState
-      // eventBus.emitState('toggle-sidebar', newState)
-      // console.log('侧边栏状态：', eventBus.getState('toggle-sidebar'))
+    },
+    // 获取封面并拼接
+    imagePath(id) {
+      const song = this.$store.getters['releases/getReleaseById'](id)
+      return getImagesUrl(song.cover)
     }
   }
 }
@@ -267,7 +268,6 @@ export default {
 
 .w-lyricOpen {
   height: 100vh !important;
-
 }
 .w-lyricOpen-hc {
     border-radius: 0 !important;

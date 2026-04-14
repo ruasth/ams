@@ -62,7 +62,6 @@
     <el-dialog
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose"
       class="releases-dialog"
     >
       <div class="hologram-content">
@@ -73,8 +72,10 @@
           }"
         >
           <div class="songpage-button-box">
-            <button class="songpage-button link">歌曲主页</button>
-            <button class="songpage-button play" @click="playSong(songsInfo.id)">+</button>
+            <!-- <button class="songpage-button link">歌曲主页</button> -->
+            <button class="songpage-button play" @click="playSong(songsInfo.id)">
+              <svg-icon icon-class="play" class="icon-play" />
+            </button>
           </div>
         </div>
         <div class="songs-info">
@@ -207,7 +208,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* 此处保持你原有的全局变量设置 */
 :root {
   --bg-dark: #050505;
   --card-bg: rgba(255, 255, 255, 0.03);
@@ -409,7 +409,6 @@ export default {
     }
   }
 
-  /* 核心：暗淡效果 */
   &.dimmed {
     opacity: 0.15;
     filter: grayscale(1) blur(2px);
@@ -460,8 +459,14 @@ export default {
       box-shadow: 0 0 5px rgba(0, 243, 255, 0.15),
         inset 0 0 20px rgba(0, 243, 255, 0.05);
       cursor: pointer;
-
       transition: all ease-in-out 0.1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .icon-play {
+        font-size: 24px;
+      }
 
       &:hover {
         box-shadow: 0 0 40px rgba(0, 243, 255, 0.15),
@@ -558,30 +563,26 @@ export default {
   }
 }
 </style>
-
 <!-- dialog -->
-<style lang="scss">
-/* 全息弹窗样式覆盖 */
-.releases-dialog.el-dialog__wrapper {
+<style lang="scss" scoped>
+::v-deep .releases-dialog.el-dialog__wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1200px; // 引入 3D 视角
+  perspective: 1200px;
   overflow: hidden;
 
   .el-dialog {
     width: 700px !important;
     max-width: 95% !important;
     margin: 0 !important;
-    background: transparent !important; // 关键：容器背景设为透明
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
 
-    // 入场动画：模拟全息投影展开
     transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     transform-style: preserve-3d;
 
-    /* 全息内容容器 */
     .el-dialog__body {
       padding: 0 !important;
       position: relative;
@@ -602,7 +603,6 @@ export default {
       );
     }
 
-    /* 模拟全息屏幕扫描线纹理 */
     &::after {
       content: "";
       position: absolute;
@@ -610,7 +610,6 @@ export default {
       z-index: 2;
       pointer-events: none;
 
-      // 边框发光效果
       border: 1px solid rgba(0, 243, 255, 0.4);
       box-shadow: 0 0 40px rgba(0, 243, 255, 0.15),
         inset 0 0 20px rgba(0, 243, 255, 0.05);
@@ -618,7 +617,6 @@ export default {
     }
   }
 
-  /* 动画钩子：利用 Element 的过渡类实现3D弹出 */
   &.dialog-fade-enter-active {
     .el-dialog {
       animation: hologramIn 0.5s ease-out;
@@ -626,7 +624,6 @@ export default {
   }
 }
 
-// 进入动画
 @keyframes hologramIn {
   from {
     opacity: 0;
@@ -640,22 +637,18 @@ export default {
   }
 }
 
-/* 遮罩层 */
-.v-modal {
-  // 暗背景
+::v-deep .v-modal {
   background: #000 !important;
   opacity: 0.85 !important;
 
-  // 强力的背景模糊
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
 
-  // transition
   transition: all 0.4s ease !important;
 }
 
 // 关闭按钮
-.el-dialog__header {
+::v-deep .el-dialog__header {
   position: absolute;
   top: 0;
   z-index: 3;

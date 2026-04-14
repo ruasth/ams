@@ -29,7 +29,7 @@ module.exports = [
       const song = newsInfo.find(item => Number(item.id) === Number(id))
 
       if (!song) {
-        return { code: 404, message: 'Song not found' }
+        return { code: 404, message: 'News not found' }
       }
 
       return {

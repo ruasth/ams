@@ -5,7 +5,7 @@
     <div class="content-wrapper" :class="{ 'sideBar-isOpen': sideBarState }">
       <div class="cw-position">
         <!-- cesium实例显示区域 -->
-        <div id="my-map" class="map-window" />
+        <div v-once id="my-map" class="map-window" />
         <!-- 目录 -->
         <div class="list-box">
           <div class="list-title">巡演站点清单</div>
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      viewer: null, // viewer实例
+      // viewer: null, // viewer实例
       handler: null, // handler实例
       activeIndex: 0, // 当前播放的巡演站点索引
       defaultRoute: 'europe',
@@ -43,13 +43,13 @@ export default {
 
       europeStops: [], // 欧洲巡演站点数据
       americanStops: [], // 美国巡演站点数据
-      europeRouteEntities: [], // 欧洲巡演路线实体列表
-      americanRouteEntities: [], // 美国巡演路线实体实体列表
       defaultProps: {
         label: `label`
       }
     }
   },
+  europeRouteEntities: [], // 欧洲巡演路线实体列表
+  americanRouteEntities: [], // 美国巡演路线实体实体列表
   computed: {
     // 当前播放的线路
     currentRoute() {
@@ -81,7 +81,18 @@ export default {
       ]
     }
   },
+  created() {
+    // 初始化时首先确定侧边栏状态
+    const thebus = eventBus.getState('toggle-sidebar')
+    this.sideBarState = thebus
+    // console.log(thebus)
+  },
   async mounted() {
+    // 监听事件总线发送的侧边栏状态
+    eventBus.$on('toggle-sidebar', (state) => {
+      this.sideBarState = state
+      console.log('侧边栏打开没', state)
+    })
     try {
       // 请求数据
       await this.getTourData()
@@ -90,6 +101,7 @@ export default {
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMDkyMGJlMi0xMGIxLTQwMzktYjc2NS00NjFhYTc4OGM1YzgiLCJpZCI6NDA2NDUzLCJpYXQiOjE3NzQxODcxMjl9.P5hXeNfGqdm9b9x0Rj46_2CAqu8KvhQKINquNKHl5tM'
       })
+      // this.Obeject.freeze(this.viewer)
       // 初始化handler
       this.handler = initHandler(this.viewer, (entity) => {
         this.handleEntityClick(entity)
@@ -110,19 +122,23 @@ export default {
     } catch (error) {
       console.error('地图初始化失败', error)
     }
-    // 监听事件总线发送的侧边栏状态
-    eventBus.$on('toggle-sidebar', (state) => {
-      this.sideBarState = state
-      console.log('侧边栏打开没', state)
-    })
   },
   beforeDestroy() {
-    if (this.viewer) {
-      this.viewer.destroy()
-    }
+    // 销毁handler实例
     if (this.handler) {
       this.handler.destroy()
+      this.handler = null
     }
+    // 销毁地图实例
+    if (this.viewer) {
+      this.viewer.entities.removeAll()
+      this.viewer.destroy()
+      this.viewer = null
+    }
+    this.europeRouteEntities = null
+    this.americanRouteEntities = null
+    // 取消事件总线监听
+    eventBus.$off('toggle-sidebar')
   },
   methods: {
     // 绘制巡演路线
@@ -336,6 +352,8 @@ export default {
     .map-window {
       width: 100%;
       height: 75vh;
+      will-change: transform;
+      transform: translateZ(0);
       position: relative;
     }
     // 站点列表

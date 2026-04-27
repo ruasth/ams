@@ -1,4 +1,5 @@
 const path = require('path')
+const bodyParser = require('body-parser')
 const mockServer = require('./mock/index.js')
 
 function resolve(dir) {
@@ -28,6 +29,7 @@ module.exports = {
     //   }
     // },
     before: function(app) {
+      app.use(bodyParser.json())
       mockServer(app)
     }
   },

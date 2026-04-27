@@ -7,6 +7,8 @@ module.exports = [
     url: '/news/list', // 接口地址
     type: 'get', // 请求方法
     response: config => {
+      // console.log(config)
+
       // 模拟搜索过滤逻辑
       return {
         code: 20000, // 业务状态吗

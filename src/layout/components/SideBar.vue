@@ -13,8 +13,7 @@
             :key="item.QID"
             class="songList"
             :class="item.id === currentSong ? 'is-current' : 'not-current'"
-            @dblclick="playSong(item.id)"
-            @click="imagePath(item.id)"
+            @click="playSong(item.id)"
           >
             <div class="cover-box">
               <i
@@ -24,9 +23,9 @@
                     ? 'el-icon-video-pause'
                     : 'el-icon-video-play'
                 "
-                @click="handleGlobalPlay(item.id)"
+                @click.stop="iconPlay(item.id)"
               />
-              <img :src="imagePath(item.id)">
+              <img :src="imagePath(item.cover)">
             </div>
             {{ item.title }}
           </div>
@@ -51,6 +50,7 @@ import eventBus from '@/utils/bus' // 引入事件总线
 import { mapGetters, mapActions } from 'vuex'
 import { handleGlobalPlay } from '@/utils/globalPlay.js'
 import { getImagesUrl } from '@/utils/getImageUrl'
+// import { getAudio, getLyric } from '@/utils/ncma/request'
 export default {
   name: 'Sidebar',
   data() {
@@ -71,11 +71,13 @@ export default {
       if (!this.getSongQueue) return []
       return this.getSongQueue.map(item => {
         const releases = this.getReleaseById(item.id) || {}
-        return {
+        const list = {
           ...item,
           title: releases.title || '未知歌曲',
           cover: releases.cover || ''
         }
+        // console.log(list)
+        return list
       })
     },
     // 判断当前播放歌曲
@@ -108,8 +110,8 @@ export default {
     // 引入vuex播放歌曲方法
     ...mapActions('player', ['playSong']),
     // 播放控制
-    handleGlobalPlay(id) {
-      console.log(id)
+    iconPlay(id) {
+      // console.log(id)
       handleGlobalPlay({ store: this.$store, message: this.$message }, id)
     },
     // 初始化发射事件存入状态
@@ -123,9 +125,8 @@ export default {
       eventBus.emitState('toggle-sidebar', this.isShowSideBar)
     },
     // 获取封面并拼接
-    imagePath(id) {
-      const song = this.$store.getters['releases/getReleaseById'](id)
-      return getImagesUrl(song.cover)
+    imagePath(cover) {
+      return getImagesUrl(cover)
     }
   }
 }

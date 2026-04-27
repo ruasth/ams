@@ -2,6 +2,9 @@ export function handleGlobalPlay({ store, message }, id) {
   // 从vuex中获取播放实例、播放状态、歌曲列表、当前播放歌曲
   const { audioInstance, songQueue, currentSong } = store.state.player
 
+  console.log('点击的歌曲id', id)
+  // console.log('当前的歌曲id', currentSong.id)
+
   if (songQueue.length === 0) {
     message.warning('当前播放列表为空')
     return

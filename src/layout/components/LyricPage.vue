@@ -185,16 +185,16 @@ export default {
   },
   watch: {
     // 监听当前歌曲 变化自动获取歌词
-    getCurrentSong: {
-      handler(newSong) {
-        if (newSong && newSong.id) {
-          this.$store.dispatch('lyric/getLyrics', newSong.id) // 获取歌词
-        } else {
-          this.$store.commit('lyric/SET_LYRICS', { OL: '', TL: '' })
-        }
-      },
-      immediate: true // 立即执行一次 确保面板打开时已有歌词
-    },
+    // getCurrentSong: {
+    //   handler(newSong) {
+    //     if (newSong && newSong.id) {
+    //       this.$store.dispatch('lyric/getLyrics', newSong.id) // 获取歌词
+    //     } else {
+    //       this.$store.commit('lyric/SET_LYRICS', { OL: '', TL: '' })
+    //     }
+    //   },
+    //   immediate: true // 立即执行一次 确保面板打开时已有歌词
+    // },
     // 监听当前播放时间 自动计算返回
     getCurrentTime: {
       handler(newTime) {
@@ -349,20 +349,23 @@ export default {
     },
     // 计算间奏时长返回样式
     getInterludeDotStyle(line, dotIndex) {
-      const now = this.currentTime
-      const start = line.time
+      const now = this.currentTime // 当前播放时间
+      const start = line.time // 当前行开始时间
 
-      const duration = line.duration || 1
-      const progress = Math.max(0, Math.min(1, (now - start) / duration))
+      const duration = line.duration || 1 // 当前行时长
+      const progress = Math.max(0, Math.min(1, (now - start) / duration)) // 当前进度
 
-      const segment = 1 / 3
-      const startThreshold = (dotIndex - 1) * segment
+      const segment = 1 / 3 // 每段时长
+      const startThreshold = (dotIndex - 1) * segment // 当前段开始阈值
 
       let dotOpacity = 0.2
 
       if (progress > startThreshold) {
+        // 计算当前段进度
         const localProgress = (progress - startThreshold) / segment
+        // 根据进度计算不透明度
         const clampedProgress = Math.min(1, localProgress)
+        // 根据进度计算缩放比例
         dotOpacity = 0.2 + 0.8 * clampedProgress
       }
 

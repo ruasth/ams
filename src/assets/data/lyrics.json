@@ -2,12 +2,18 @@
   {
     "id": 5,
     "title": "Sweet But Psycho",
-    "originalUrl": "Lyric/diamondsanddancefloors.lrc",
-    "translateUrl": "Lyric/diamondsanddancefloors_trans.lrc"
+    "originalUrl": "Lyric/sbp.lrc",
+    "translateUrl": "Lyric/sbp_trans.lrc"
   },
   {
     "id": 14,
     "title": "Torn",
+    "originalUrl": "Lyric/torn.lrc",
+    "translateUrl": "Lyric/torn_trans.lrc"
+  },
+  {
+    "id": 44,
+    "title": "Diamonds & Dancefloors",
     "originalUrl": "Lyric/diamondsanddancefloors.lrc",
     "translateUrl": "Lyric/diamondsanddancefloors_trans.lrc"
   }

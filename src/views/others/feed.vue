@@ -1,10 +1,24 @@
 <template>
   <div class="feed-page">
     <bg-box />
-    <button class="feed_button normal-btn_foggy" @click="dialogVisible = true">
-      1
-    </button>
-    <el-dialog title="意见反馈表" :visible.sync="dialogVisible" :modal="false" width="30%">
+    <!-- 按钮容器 -->
+    <div class="button-wrapper">
+      <!-- 反馈表单按钮 -->
+      <button class="button normal-btn_foggy" @click="feedDialog = true">
+        反馈表单
+      </button>
+      <!-- 登录模拟按钮 -->
+      <button class="button normal-btn_foggy" @click="loginDialog = true">
+        登录模拟
+      </button>
+    </div>
+    <!-- 反馈表单 -->
+    <el-dialog
+      title="意见反馈表"
+      :visible.sync="feedDialog"
+      :modal="false"
+      width="30%"
+    >
       <!-- 内容容器 -->
       <div class="dialog-content-container">
         <!-- 按钮区域 -->
@@ -38,23 +52,63 @@
                 <el-button
                   type="text"
                   size="small"
-                  :disabled="feedList.length === 1 && (!row.name && !row.content)"
+                  :disabled="feedList.length === 1 && !row.name && !row.content"
                   @click="remobveRow($index)"
-                >{{ feedList.length === 1 ? '清除' : '移除' }}</el-button>
+                >{{ feedList.length === 1 ? "清除" : "移除" }}</el-button>
                 <el-button
                   type="text"
                   size="small"
                   :disabled="row.sub || !row.name || !row.content"
                   @click="subRow($index)"
-                >{{ row.sub ? '已提交' : '提交' }}</el-button>
+                >{{ row.sub ? "已提交" : "提交" }}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="feedDialog = false">取 消</el-button>
         <el-button type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 登录表单 -->
+    <el-dialog
+      class="loginDialog"
+      title="登录模拟"
+      :visible.sync="loginDialog"
+      :modal="false"
+      width="30%"
+    >
+      <!-- 表单主体 -->
+      <el-form
+        ref="loginForm"
+        :model="loginForm"
+        status-icon
+        :rules="loginRules"
+        label-width="100px"
+      >
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model="loginForm.name" label-width="100px" />
+        </el-form-item>
+        <el-form-item label="密码" prop="pass">
+          <el-input
+            v-model="loginForm.pass"
+            type="password"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input
+            v-model="loginForm.checkPass"
+            type="password"
+            autocomplete="off"
+          />
+        </el-form-item>
+      </el-form>
+      <!-- 底部 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeLoginDialog()">取 消</el-button>
+        <el-button type="primary" @click="subLogin()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -62,20 +116,64 @@
 
 <script>
 import bgBox from '../../components/bg-box.vue'
+import { login } from '@/api/user'
 export default {
   components: { bgBox },
   data() {
     return {
-      dialogVisible: false,
-      feedList: [{ name: '', content: '', sub: false }]
+      feedDialog: false, // 反馈弹窗状态
+      loginDialog: false, // 登录弹窗状态
+      feedList: [{ name: '', content: '', sub: false }],
+      loginForm: {
+        // 登录弹窗表单数据
+        name: '',
+        pass: '',
+        checkPass: ''
+      },
+      loginRules: {
+        // 登录弹窗表单验证规则
+        name: [
+          { required: true, trigger: 'blur', message: '请输入用户名' },
+          {
+            type: 'string',
+            min: 3,
+            max: 18,
+            message: '长度在3到18个字符',
+            trigger: 'blur'
+          }
+        ],
+        pass: [
+          { required: true, trigger: 'blur', message: '请输入密码' },
+          {
+            min: 6,
+            max: 20,
+            message: '长度在6到20个字符',
+            trigger: 'blur'
+          }
+        ],
+        checkPass: [
+          { required: true, trigger: 'blur', message: '请再次输入密码' },
+          {
+            validator: (rule, value, callback) => {
+              if (value !== this.loginForm.pass) {
+                callback(new Error('两次密码不一致'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
+    // 添加新行
     addNewFeed() {
       this.feedList.push({ name: '', content: '', sub: false })
     },
+    // 提交当前行
     subRow(index) {
       const currentRow = this.feedList[index]
       if (!currentRow.name || !currentRow.content) {
@@ -85,6 +183,7 @@ export default {
       this.feedList[index].sub = true
       this.$message.success({ message: '反馈提交成功', duration: 3000 })
     },
+    // 删除当前行
     remobveRow(index) {
       if (this.feedList.length === 1) {
         this.$nextTick(() => {
@@ -95,6 +194,31 @@ export default {
       } else {
         this.feedList.splice(index, 1)
       }
+    },
+    // 关闭登录弹窗
+    closeLoginDialog() {
+      this.loginDialog = false
+      this.loginForm = {
+        name: '',
+        pass: '',
+        checkPass: ''
+      }
+    },
+    // 提交登录信息
+    async subLogin() {
+      const { name, pass } = this.loginForm
+      this.$refs.loginForm.validate((valid) => {
+        console.log(name, pass)
+
+        if (valid) {
+          login({ name, pass }).then((res) => {
+            console.log(res)
+          }).catch((err) => {
+            console.log('登录失败', err)
+          })
+        }
+      })
+      this.closeLoginDialog()
     }
   }
 }
@@ -108,15 +232,27 @@ export default {
   background-color: #000;
   position: relative;
 
-  .feed_button {
-    width: 100px;
-    height: 100px;
+  .button-wrapper {
+    width: auto;
+    height: auto;
+    display: flex;
+    gap: 40px;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    &:active {
-      transform: translate(-50%, -50%) scale(0.95) !important;
+    transform: translate(-50%, -50%);
+
+    .button {
+      width: 100px;
+      height: 100px;
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+      transform: scale(1);
+
+      &:active {
+        transform: scale(0.95) !important;
+      }
     }
   }
 }
@@ -129,6 +265,7 @@ export default {
   border-radius: 5px;
   outline: none;
   transition: 0.3s;
+
   &:focus {
     border-color: var(--accent-cyan);
     box-shadow: var(--shadow-blue);
@@ -164,27 +301,38 @@ export default {
   min-height: 0;
   overflow: hidden;
 }
+
 .el-table {
   background-color: #ffffff00 !important;
 }
+
 ::v-deep .el-table th,
 ::v-deep .el-table tr {
   background-color: transparent !important;
 }
+
 ::v-deep .el-table thead {
-    color: #fff !important;
+  color: #fff !important;
 }
+
 ::v-deep .el-table__row {
   background-color: transparent !important;
 }
-::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
-    background-color: #40a0ff !important;
+
+::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: #40a0ff !important;
 }
+
 ::v-deep .el-table--enable-row-hover .el-table__body tr:hover .el-button {
-    color: #fff !important;
+  color: #fff !important;
 }
-::v-deep .el-table--enable-row-hover .el-table__body tr:hover input::placeholder {
-    color: #fff !important;
+
+::v-deep
+  .el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  input::placeholder {
+  color: #fff !important;
 }
 
 ::v-deep .el-table__header-wrapper {
@@ -195,30 +343,33 @@ export default {
 ::v-deep .el-table__body-wrapper {
   overflow-y: auto !important;
   display: flex;
-    height: 449px;
-    align-items: flex-start;
-    justify-content: center;
+  height: 449px;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 3px;
 }
+
 ::v-deep .el-table__body-wrapper::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 ::v-deep .el-input__inner {
   background-color: #ffffff00;
   color: #fff;
 }
+
 ::v-deep .el-input__inner:focus {
-    border-color: #fff !important;
-    outline: 0;
+  border-color: #fff !important;
+  outline: 0;
 }
 
 ::v-deep .el-dialog {
@@ -238,11 +389,13 @@ export default {
   .el-button {
     border: 1px solid transparent;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 25px rgba(64, 158, 255, 0.3);
       transform: scale(1.05);
     }
+
     &:active {
       background: #409eff !important;
       border-color: #409eff !important;
@@ -250,10 +403,12 @@ export default {
       transform: translateY(-5px);
       transform: scale(0.95) !important;
     }
+
     &--default {
       background: #fff;
       color: #000;
     }
+
     &--primary {
       background: linear-gradient(#fff1, transparent);
       backdrop-filter: blur(10px);
@@ -275,6 +430,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10%;
+
   .__news-content {
     max-height: 40%;
     display: inline-block;
@@ -283,6 +439,7 @@ export default {
     word-break: break-all;
     overflow: hidden;
   }
+
   .__news-photo-wrapper {
     min-height: 50%;
     flex-grow: 1;
@@ -295,5 +452,24 @@ export default {
 ::v-deep .addButtonLine {
   display: flex;
   justify-content: flex-end;
+}
+
+// 登录弹窗
+::v-deep .loginDialog .el-dialog__body {
+  justify-content: center;
+}
+::v-deep .el-form {
+  padding: 20px 20px 0 20px;
+}
+::v-deep .el-form-item {
+  display: flex;
+  justify-content: center;
+}
+::v-deep .el-form-item__label {
+  float: none;
+}
+::v-deep .el-form-item__content {
+  width: 50%;
+  margin-left: 0px !important;
 }
 </style>

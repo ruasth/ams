@@ -75,8 +75,6 @@ html {
     @extend .jumpy-transition;
     &:active {
       @include active-bgcl;
-      // background: #409eff !important;
-      // border-color: #409eff !important;
     }
   }
 }

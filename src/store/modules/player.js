@@ -8,6 +8,7 @@ const state = {
   rafId: null, // 请求动画帧
   audioInstance: null, // 全局唯一Audio实例
   playState: false, // 播放状态：true=播放，false=暂停
+  isDragging: false, // 推拽状态：true=推拽中，false=推拽结束
 
   currentSong: null, // 当前播放歌曲（{id,title,audioUrl}）
   currentTime: 0, // 当前歌曲播放时间
@@ -89,14 +90,13 @@ const actions = {
     commit('SET_SONG_QUEUE', songList)
   },
   // 播放歌曲
-  playSong({ commit, state, dispatch }, songId) {
-    console.log('歌曲id', songId)
-    console.log('当前歌曲', state.currentSong)
-
+  async playSong({ commit, state, dispatch }, id) {
     let targetSong = state.songQueue[0]
+    let title = null
 
-    if (songId) {
-      const findSong = state.songQueue.find(item => item.id === songId)
+    // 查找对应ID歌曲
+    if (id) {
+      const findSong = state.songQueue.find(item => item.id === id)
       if (findSong) {
         targetSong = findSong
       } else if (!findSong) {
@@ -111,9 +111,25 @@ const actions = {
         commit('SET_CURRENT_SONG', targetSong)
       }
     }
+    title = targetSong.title
+    console.log('title是', title)
+
+    console.log(targetSong)
+    // 检测是否有音频
+    // if (!targetSong.audioUrl) {
+    //   const res = await getAudio(songTitle)
+    //   console.log(res)
+    //   // targetSong.audioUrl = ncmaUrl
+    // }
+    // ---
+    // if (!targetSong.Lyric) {
+    //   const res = await getLyric(title)
+    //   console.log('请求的歌词', res)
+    //   // targetSong.audioUrl = ncmaUrl
+    // }
 
     let audio = state.audioInstance
-    // 无实例则创建，绑定播放结束事件
+    // 无实例则创建，绑定播放事件
     if (!audio) {
       audio = new Audio()
       // 播放结束后更新状态
@@ -141,7 +157,8 @@ const actions = {
       commit('SET_CURRENT_SONG', targetSong)
       commit('SET_PLAY_STATE', true)
       // 派发歌词请求
-      dispatch('lyric/getLyrics', targetSong.id, { root: true })
+      // dispatch('lyric/lyricsByNcma', title, { root: true })
+      dispatch('lyric/getLyrics', { id, title }, { root: true })
       // 启动 rAF 循环
       dispatch('_startRAF')
     }).catch(err => {
@@ -151,7 +168,7 @@ const actions = {
   },
   // 暂停/播放切换
   togglePlay({ state, commit, dispatch }) {
-    if (!state.audioInstance || !state.currentSong) return
+    // if (!state.audioInstance || !state.currentSong) return
     const audio = state.audioInstance
     if (audio.paused) {
       audio.play().then(() => {

@@ -15,7 +15,7 @@
             </div>
             <div
               class="hover-overlay"
-              @click="$emit('open', {id: item.id, title: item.title})"
+              @click="onClickNews({id: item.id, title: item.title})"
             >
               <div class="stats">
                 <span><i class="el-icon-view" /> {{ item.views }}</span>
@@ -32,11 +32,40 @@
       </div>
     </div>
     <div v-else class="no-news">暂无内容</div>
+    <!-- 新闻弹窗 -->
+    <el-dialog
+      :title="newsInfo.title"
+      :visible.sync="dialogVisible"
+      :modal="true"
+      :modal-append-to-body="false"
+      :before-close="onCloseNews"
+      width="30%"
+    >
+      <div class="el-dialog__news-wrapper">
+        <span v-if="newsInfo.content" class="__news-content">{{ newsInfo.content }}</span>
+        <div class="__news-photo-wrapper">
+          <!-- 轮播图 -->
+          <template>
+            <div class="block">
+              <el-carousel trigger="click">
+                <el-carousel-item
+                  v-for="(item) in newsInfo.assets"
+                  :key="item.id"
+                >
+                  <img :src="imagePath(item)" alt="">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+          </template>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getImagesUrl } from '@/utils/getImageUrl'
+import { getNewsInfo } from '@/api/news'
 export default {
   name: 'MainContent',
   props: {
@@ -51,6 +80,8 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false, // 弹窗状态
+      newsInfo: []
     }
   },
   computed: {
@@ -76,6 +107,22 @@ export default {
     // 计算图片路径
     imagePath(path) {
       return getImagesUrl(path)
+    },
+    // 获取新闻详情
+    async newsInfoRequest(id, title) {
+      const res = (await getNewsInfo(id)).data
+      res.title = title
+      this.newsInfo = res
+      // console.log(this.newsInfo)
+    },
+    // 打开新闻
+    onClickNews({ id, title }) {
+      this.newsInfoRequest(id, title)
+      this.dialogVisible = true
+    },
+    onCloseNews() {
+      this.dialogVisible = false
+      this.newsInfo = []
     }
   }
 }
@@ -225,5 +272,112 @@ export default {
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+</style>
+
+<style lang="scss" scoped>
+::v-deep .el-dialog {
+  width: 60% !important;
+  height: 70%;
+  border-radius: 20px;
+  margin-top: 0 !important;
+  top: 53%;
+  transform: translateY(-50%);
+
+  background: linear-gradient(#ffffff00, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  flex-direction: column;
+
+  .el-dialog__body {
+    flex-grow: 1;
+  }
+
+  .el-button {
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(64, 158, 255, 0.3);
+      transform: scale(1.05);
+    }
+    &:active {
+      background: #409eff !important;
+      border-color: #409eff !important;
+      color: #fff;
+      transform: translateY(-5px);
+      transform: scale(0.95) !important;
+      transition: all 0.1s;
+    }
+    &--default {
+      background: #fff;
+      color: #000;
+    }
+    &--primary {
+      background: linear-gradient(#fff1, transparent);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 25px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  .el-dialog__title,
+  .el-dialog__close {
+    color: #fff;
+
+    text-shadow: 1px 2px 2px #000;
+  }
+}
+
+::v-deep .el-dialog__news-wrapper {
+  width: 100%;
+  height: 100%;
+  // background-color: beige;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  overflow: hidden;
+  .__news-content {
+    width: 40%;
+    display: inline-block;
+    color: #fff;
+    text-shadow: 1px 2px 2px #000;
+    font-size: 14px;
+    word-break: break-all;
+    white-space: pre-line;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  .__news-photo-wrapper {
+    // width: 40%;
+    // max-height: 50%;
+    flex-grow: 1;
+    color: #fff;
+    // background-color: #409eff;
+    display: grid;
+  }
+}
+::v-deep .el-carousel {
+  height: 100%;
+}
+::v-deep .el-carousel__container {
+  height: 100%;
+  .el-carousel__item {
+    display: flex;
+    justify-content: center;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      // width: auto;
+      // height: auto;
+    }
+  }
 }
 </style>

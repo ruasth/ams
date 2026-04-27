@@ -82,6 +82,12 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    // 销毁echarts实例
+    if (this.piano) {
+      this.piano.dispose()
+    }
+  },
   methods: {
     initECharts() {
       if (!this.isStickyFixed) return

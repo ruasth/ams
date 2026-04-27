@@ -27,6 +27,7 @@ export async function initMap(containerId, options = {}) {
 
   // 创建Viewer 禁用默认基础图层
   const viewer = new CesiumLib.Viewer(containerId, {
+    requestRenderMode: true, // 启用请求渲染模式
     animation: false,
     baseLayer: false, // 不显示默认基础图层
     baseLayerPicker: false,

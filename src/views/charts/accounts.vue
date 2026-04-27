@@ -90,7 +90,6 @@ export default {
       },
       accountsData: {
         // 图表数据
-
       }
     }
   },

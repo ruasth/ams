@@ -1,9 +1,10 @@
 <template>
   <div class="background">
-    <h class="title_main t-position">AMS音乐音乐资料馆</h>
+    <h class="title_main t-position">AMS音乐资料馆</h>
     <h class="title_sub t-position">在此浏览AvaMax的世界</h>
     <!-- <a href="" class="btn text_box_btn btn_animated">点击播放</a> -->
     <button class="t-position the-button" @click="$router.push('/releases')">前往作品馆</button>
+    <h class="title_tip t-position">滚动浏览更多</h>
   </div>
 </template>
 
@@ -71,10 +72,14 @@ export default {}
   @include setTitle($size: 75px, $weight: 600, $top: 18%);
   @include setMove('moveInLeft', 'X', -100px, 10px, 1s, translateX(-50%));
 }
-
 .title_sub {
   @include setTitle($size: 20px, $weight: 600, $top: 60%);
   @include setMove('moveInRight', 'X', 100px, -10px, 1s, translateX(-50%));
+}
+.title_tip {
+  // transform: translateX(-50%);
+  @include setTitle($size: 15px, $weight: 400, $top: 82%, $ltspc: 15%);
+  @include setMove('moveInBottom2', 'Y', 100px, -10px, 1s, translateX(-50%));
 }
 
 .the-button {
